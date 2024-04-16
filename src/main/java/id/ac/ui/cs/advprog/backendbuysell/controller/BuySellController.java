@@ -8,6 +8,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class BuySellController {
     @RequestMapping("")
     public String main(){
-        return new String("Hello world");
+        return "uglyhtml";
     }
 }
