@@ -12,4 +12,4 @@ ENV JDBC_DATABASE_USERNAME ${JDBC_DATABASE_USERNAME}
 WORKDIR /app
 COPY ./build/libs/backend-buy-sell-0.0.1-SNAPSHOT.jar /app
 EXPOSE 8080
-CMD ["java","-jar","backend-but-sell-0.0.1-SNAPSHOT.jar"]
+CMD ["java","-jar","backend-buy-sell-0.0.1-SNAPSHOT.jar"]
