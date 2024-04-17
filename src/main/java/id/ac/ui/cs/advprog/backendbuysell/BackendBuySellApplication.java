@@ -6,7 +6,6 @@ import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 
 @SpringBootApplication(exclude={DataSourceAutoConfiguration.class})
 public class BackendBuySellApplication {
-
     public static void main(String[] args) {
         SpringApplication.run(BackendBuySellApplication.class, args);
     }
