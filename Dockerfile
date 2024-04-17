@@ -1,4 +1,4 @@
-FROM gradle:jdk17-alpine
+FROM gradle:jdk21
 ARG PRODUCTION
 ARG JDBC_DATABASE_PASSWORD
 ARG JDBC_DATABASE_URL
@@ -10,7 +10,13 @@ ENV JDBC_DATABASE_URL ${JDBC_DATABASE_URL}
 ENV JDBC_DATABASE_USERNAME ${JDBC_DATABASE_USERNAME}
 
 WORKDIR /app
-RUN ls -al
-COPY ./backend-buy-sell-0.0.1-SNAPSHOT.jar /app
+
+# Copy the JAR file from the build context into the Docker image
+COPY ./build/libs/backend-buy-sell-0.0.1-SNAPSHOT.jar /app/
+
+# Add a command to list the contents of the directory
+RUN ls -l /app
+
 EXPOSE 8080
+
 CMD ["java","-jar","backend-buy-sell-0.0.1-SNAPSHOT.jar"]
