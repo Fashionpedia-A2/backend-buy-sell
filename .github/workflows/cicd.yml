@@ -22,7 +22,7 @@ jobs:
           cache: "gradle"
 
       - name: Debug database
-        run: echo "url= $JDBC_DATABASE_URL ${{ JDBC_DATABASE_URL }} , username= $JDBC_DATABASE_USERNAME ${{ JDBC_DATABASE_USERNAME }} , pass= $JDBC_DATABASE_PASSWORD ${{ JDBC_DATABASE_PASSWORD }}, empty= $IDKLOL ${{ IDKLOL }}"
+        run: echo "url= ${{ JDBC_DATABASE_URL }} , username= ${{ JDBC_DATABASE_USERNAME }} , pass= ${{ JDBC_DATABASE_PASSWORD }}, empty= ${{ IDKLOL }}"
 
       - name: Build with Gradle
         run: chmod +x ./gradlew && ./gradlew build
