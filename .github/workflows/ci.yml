@@ -3,7 +3,7 @@ name: CI & CD Staging
 on:
   push:
     branches:
-      - main
+      - staging
 
 jobs:
 
