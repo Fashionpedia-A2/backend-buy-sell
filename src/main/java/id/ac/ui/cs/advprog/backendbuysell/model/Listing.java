@@ -1,91 +1,66 @@
 package id.ac.ui.cs.advprog.backendbuysell.model;
 
-import id.ac.ui.cs.advprog.backendbuysell.enums.ListingCondition;
-import id.ac.ui.cs.advprog.backendbuysell.enums.ListingStatus;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
-
 @Entity
-@Table(name = "listing")
+@Table(name="listing")
 @Getter
-@Setter
 public class Listing {
-    @Id
-    @GeneratedValue
-    private Long id;
 
-    @Column(name = "name", nullable = false)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long id;
+
+    @Setter
+    @Column(name="name", nullable = false)
     private String name;
 
-    @Column(name = "seller_id", nullable = false)
-    private String sellerId;
-
-    @Column(name = "stock", nullable = false)
-    private int stock;
-
-    @Column(name = "price", nullable = false)
-    private Long price;
-
-    @Column(name = "status", nullable = false)
-    private String status;
-
-    @Column(name = "category")
-    private String category;
-
-    @Column(name = "image_url")
+    @Setter
+    @Column(name="image_url", nullable = false)
     private String imageUrl;
 
-    @Column(name = "size")
+    @Setter
+    @Column(name="stock", nullable = false)
+    private int stock;
+
+
+    @Setter
+    @Column(name="price", nullable = false)
+    private Long price;
+
+    @Setter
+    @Column(name="size", nullable = false)
     private String size;
 
-    @Column(name = "condition")
+
+    @Setter
+    @Column(name="condition", nullable = false)
     private String condition;
+    public Listing(){
 
-    @Column(name = "description")
-    private String description;
-
-    public Listing(String name, String sellerId, int stock, Long price) {
-        setName(name);
-        setSellerId(sellerId);
-        setStock(stock);
-        setPrice(price);
-        setStatus("PENDING");
     }
 
-    public Listing() {
-    }
-
-    public void setStock(int stock) {
-        if (stock < 0) {
-            throw new IllegalArgumentException("Stock must be non-negative number");
-        }
+    public Listing(String name, String imageUrl, int stock, Long price, String size, String condition){
+        this.name = name;
+        this.imageUrl = imageUrl;
         this.stock = stock;
-    }
-
-    public void setPrice(Long price) {
-        if (price < 0L) {
-            throw new IllegalArgumentException("Price must be non-negative number");
-        }
         this.price = price;
+        this.size = size;
+        this.condition = condition;
     }
 
-    public void setStatus(String status){
-        status = status.toUpperCase();
-        if(ListingStatus.contains(status)){
-            this.status = status;
-        } else {
-            throw new IllegalArgumentException("Invalid listing status");
-        }
-    }
-
-    public void setCondition(String condition){
-        condition = condition.toUpperCase();
-        if(ListingCondition.contains(condition)){
-            this.condition = condition;
-        } else {
-            throw new IllegalArgumentException("Invalid listing condition");
+    @Override
+    public String toString() {
+        ObjectMapper om = new ObjectMapper();
+        try {
+            return om.writeValueAsString(this);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
         }
     }
 }
