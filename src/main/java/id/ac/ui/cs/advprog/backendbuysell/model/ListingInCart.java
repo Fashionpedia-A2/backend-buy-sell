@@ -15,8 +15,18 @@ public class ListingInCart {
     private long id;
 
     @Setter
-    @Column(name="cart", nullable = false)
+    @ManyToOne
+    @JoinColumn(name = "listing_id", referencedColumnName = "id")
+    private Listing listing;
+
+    @Setter
+    @ManyToOne
+    @JoinColumn(name = "cart_id", referencedColumnName = "id")
     private Cart cart;
+
+    @Setter
+    @Column(name = "quantity", nullable = false)
+    private int quantity;
 
     @Override
     public String toString() {
