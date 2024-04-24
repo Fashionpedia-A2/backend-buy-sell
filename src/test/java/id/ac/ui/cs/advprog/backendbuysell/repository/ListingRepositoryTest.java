@@ -4,16 +4,23 @@ import id.ac.ui.cs.advprog.backendbuysell.model.Listing;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@SpringBootTest
+@ExtendWith(SpringExtension.class)
+@DataJpaTest
 public class ListingRepositoryTest {
+    @Autowired
+    private TestEntityManager entityManager;
+
     @Autowired
     private ListingRepository repository;
 
@@ -29,11 +36,13 @@ public class ListingRepositoryTest {
         this.listings.add(listing1);
         this.listings.add(listing2);
         this.listings.add(listing3);
+
+        this.listings.forEach(entityManager::persist);
     }
 
     @AfterEach
     public void resetRepository(){
-        repository.deleteAll();
+        this.entityManager.clear();
     }
 
     @Test
