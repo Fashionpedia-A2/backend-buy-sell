@@ -1,5 +1,6 @@
 package id.ac.ui.cs.advprog.backendbuysell.model;
 
+import id.ac.ui.cs.advprog.backendbuysell.enums.ListingCondition;
 import id.ac.ui.cs.advprog.backendbuysell.enums.ListingStatus;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -78,6 +79,15 @@ public class Listing {
             this.status = status;
         } else {
             throw new IllegalArgumentException("Invalid listing status");
+        }
+    }
+
+    public void setCondition(String condition){
+        condition = condition.toUpperCase();
+        if(ListingCondition.contains(condition)){
+            this.condition = condition;
+        } else {
+            throw new IllegalArgumentException("Invalid listing condition");
         }
     }
 }
