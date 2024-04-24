@@ -27,9 +27,7 @@ public class ListingTest {
 
     @Test
     void testSetNegativeStock() {
-        assertThrows(IllegalArgumentException.class, () -> {
-            this.listing.setStock(-1);
-        });
+        assertThrows(IllegalArgumentException.class, () -> this.listing.setStock(-1));
     }
 
     @Test
@@ -40,9 +38,7 @@ public class ListingTest {
 
     @Test
     void testSetNegativePrice() {
-        assertThrows(IllegalArgumentException.class, () -> {
-            this.listing.setPrice(-1L);
-        });
+        assertThrows(IllegalArgumentException.class, () -> this.listing.setPrice(-1L));
     }
 
     @Test
@@ -59,9 +55,7 @@ public class ListingTest {
 
     @Test
     void testSetInvalidStatus() {
-        assertThrows(IllegalArgumentException.class, () -> {
-            this.listing.setStatus("Jomblo");
-        });
+        assertThrows(IllegalArgumentException.class, () -> this.listing.setStatus("Jomblo"));
     }
 
     @Test
@@ -78,8 +72,6 @@ public class ListingTest {
 
     @Test
     void testSetInvalidCondition() {
-        assertThrows(IllegalArgumentException.class, () -> {
-            this.listing.setCondition("Jelek");
-        });
+        assertThrows(IllegalArgumentException.class, () -> this.listing.setCondition("Jelek"));
     }
 }

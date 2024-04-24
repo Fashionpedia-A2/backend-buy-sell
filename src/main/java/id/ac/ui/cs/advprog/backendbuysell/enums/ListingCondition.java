@@ -11,7 +11,7 @@ public enum ListingCondition {
 
     private final String value;
 
-    private ListingCondition(String value){
+    ListingCondition(String value){
         this.value = value;
     }
 

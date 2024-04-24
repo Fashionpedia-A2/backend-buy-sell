@@ -10,7 +10,7 @@ public enum ListingStatus {
 
     private final String value;
 
-    private ListingStatus(String value){
+    ListingStatus(String value){
         this.value = value;
     }
 
