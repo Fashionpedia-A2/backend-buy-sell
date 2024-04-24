@@ -7,7 +7,7 @@ on:
 jobs:
   test:
     name: Run tests
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
 
     services:
       postgres:
@@ -20,15 +20,28 @@ jobs:
           POSTGRES_PASSWORD: ${{ env.POSTGRES_PASSWORD }}
 
     steps:
-      - name: Check out the Git repository
-        uses: actions/checkout@v4
-      - name: Set up Java toolchain
-        uses: actions/setup-java@v4
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up JDK
+        uses: actions/setup-java@v2
         with:
           distribution: "temurin"
           java-version: "21"
-          cache: "gradle"
-      - name: Set gradlew as executable
-        run: chmod +x ./gradlew
-      - name: Run unit tests
-        run: ./gradlew test
+
+      - name: Set up environment
+        run: |
+          export GRADLE_USER_HOME=$HOME/.gradle
+          export SPRING_PROFILES_ACTIVE=test
+
+      - name: Test with Gradle
+        run: |
+          gradle check --info --stacktrace
+          gradle test
+          gradle jacocoTestReport
+
+      - name: Upload test results
+        uses: actions/upload-artifact@v2
+        with:
+          name: test-results
+          path: build/test-results
