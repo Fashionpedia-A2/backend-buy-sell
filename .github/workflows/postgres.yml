@@ -1,0 +1,38 @@
+name: PostgreSQL CI
+
+on: [push, pull_request]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:latest
+        env:
+          POSTGRES_USER: ${{ env.JDBC_DATABASE_USERNAME }}
+          POSTGRES_PASSWORD: ${{ env.JDBC_DATABASE_PASSWORD }}
+          POSTGRES_DB: ${{ env.JDBC_DATABASE_USERNAME }}
+          spring.datasource.url=${JDBC_DATABASE_URL}
+        ports:
+          - 5432:5432
+        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Set up JDK 11
+        uses: actions/setup-java@v2
+        with:
+          java-version: '11'
+
+      - name: Make Gradlew Executable
+        run: chmod +x gradlew
+
+      - name: Build with Gradle
+        run: ./gradlew build
+
+      - name: Run Tests
+        run: ./gradlew test
