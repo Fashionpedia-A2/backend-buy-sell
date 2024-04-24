@@ -25,7 +25,7 @@ public class ListingTest {
     @Test
     void testSetNonNegativeStock() {
         this.listing.setStock(0);
-        assertEquals(0, this.listing.getStock(0));
+        assertEquals(0, this.listing.getStock());
     }
 
     @Test
@@ -37,14 +37,14 @@ public class ListingTest {
 
     @Test
     void testSetNonNegativePrice() {
-        this.listing.setPrice(0);
-        assertEquals(0, this.listing.getPrice(0));
+        this.listing.setPrice(0L);
+        assertEquals(0L, this.listing.getPrice());
     }
 
     @Test
-    void testSetNegativeStock(){
+    void testSetNegativePrice(){
         assertThrows(IllegalArgumentException.class, () -> {
-            this.listing.setPrice(-1);
+            this.listing.setPrice(-1L);
         });
     }
 }
