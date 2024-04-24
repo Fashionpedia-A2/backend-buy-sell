@@ -14,8 +14,8 @@ public class ListingTest {
         this.listing.setCategory("Baju Muslim Pria");
         this.listing.setImageUrl("https://bajukokopria.com");
         this.listing.setSize("M");
-        this.listing.setCondition("new");
-        this.listing.setStatus("verified");
+//        this.listing.setCondition("new");
+//        this.listing.setStatus("verified");
         this.listing.setDescription("Lorem Ipsum");
     }
 
@@ -42,6 +42,44 @@ public class ListingTest {
     void testSetNegativePrice() {
         assertThrows(IllegalArgumentException.class, () -> {
             this.listing.setPrice(-1L);
+        });
+    }
+
+    @Test
+    void testSetValidStatusAllCapital(){
+        this.listing.setStatus("VERIFIED");
+        assertEquals("VERIFIED", this.listing.getStatus());
+    }
+
+    @Test
+    void testSetValidStatusLowerCase(){
+        this.listing.setStatus("PenDIng");
+        assertEquals("PENDING", this.listing.getStatus());
+    }
+
+    @Test
+    void testSetInvalidStatus() {
+        assertThrows(IllegalArgumentException.class, () -> {
+            this.listing.setStatus("Jomblo");
+        });
+    }
+
+    @Test
+    void testSetValidConditionAllCapital(){
+        this.listing.setCondition("NEW");
+        assertEquals("NEW", this.listing.getCondition());
+    }
+
+    @Test
+    void testSetValidConditionLowerCase(){
+        this.listing.setCondition("sAtisFactoRY");
+        assertEquals("SATISFACTORY", this.listing.getCondition());
+    }
+
+    @Test
+    void testSetInvalidCondition() {
+        assertThrows(IllegalArgumentException.class, () -> {
+            this.listing.setCondition("Jelek");
         });
     }
 }
