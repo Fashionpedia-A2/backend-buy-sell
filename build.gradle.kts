@@ -41,6 +41,7 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter-api:$junitJupiterVersion")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:$junitJupiterVersion")
     testImplementation("com.h2database:h2")
+    //testImplementation("com.h2database:h2:2.1.214")
 }
 
 tasks.register<Test>("unitTest"){
