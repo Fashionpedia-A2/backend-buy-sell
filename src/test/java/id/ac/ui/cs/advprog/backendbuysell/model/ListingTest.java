@@ -10,10 +10,7 @@ public class ListingTest {
 
     @BeforeEach
     void setup() {
-        this.listing = new Listing();
-        this.listing.setId("3cf20657-5575-442e-b102-a96021a3112b");
-        this.listing.setName("Baju Koko Shimmer");
-        this.listing.setSellerId("660bd2da-ed38-41c0-af02-797556f0b9a1");
+        this.listing = new Listing("Baju Koko Shimmer", "660bd2da-ed38-41c0-af02-797556f0b9a1", 100, 100_000L);
         this.listing.setCategory("Baju Muslim Pria");
         this.listing.setImageUrl("https://bajukokopria.com");
         this.listing.setSize("M");
@@ -29,7 +26,7 @@ public class ListingTest {
     }
 
     @Test
-    void testSetNegativeStock(){
+    void testSetNegativeStock() {
         assertThrows(IllegalArgumentException.class, () -> {
             this.listing.setStock(-1);
         });
@@ -42,7 +39,7 @@ public class ListingTest {
     }
 
     @Test
-    void testSetNegativePrice(){
+    void testSetNegativePrice() {
         assertThrows(IllegalArgumentException.class, () -> {
             this.listing.setPrice(-1L);
         });
