@@ -2,6 +2,7 @@ package id.ac.ui.cs.advprog.backendbuysell.model;
 
 import id.ac.ui.cs.advprog.backendbuysell.model.category.Category;
 import id.ac.ui.cs.advprog.backendbuysell.model.category.CategoryComposite;
+import id.ac.ui.cs.advprog.backendbuysell.model.category.CategoryLeaf;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -23,10 +24,10 @@ public class CategoryTest {
         categoryComposites.add(new CategoryComposite(2L, "Baju Wanita"));
 
         this.categoryLeaves = new ArrayList<>();
-        categoryLeaves.add(new CategoryComposite(3L, "Kemeja Pria"));
-        categoryLeaves.add(new CategoryComposite(4L, "Kaos Pria"));
-        categoryLeaves.add(new CategoryComposite(5L, "Outer Wanita"));
-        categoryLeaves.add(new CategoryComposite(6L, "Rompi Wanita"));
+        categoryLeaves.add(new CategoryLeaf(3L, "Kemeja Pria"));
+        categoryLeaves.add(new CategoryLeaf(4L, "Kaos Pria"));
+        categoryLeaves.add(new CategoryLeaf(5L, "Outer Wanita"));
+        categoryLeaves.add(new CategoryLeaf(6L, "Rompi Wanita"));
     }
 
     @Test
