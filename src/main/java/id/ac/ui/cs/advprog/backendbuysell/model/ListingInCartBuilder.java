@@ -1,9 +1,5 @@
 package id.ac.ui.cs.advprog.backendbuysell.model;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import jakarta.persistence.*;
-import lombok.Getter;
 import lombok.Setter;
 
 
@@ -16,14 +12,17 @@ public class ListingInCartBuilder {
     }
     public ListingInCartBuilder setQuantity(int quantity){
         listingInCart.setQuantity(quantity);
+        return this;
     }
 
     public ListingInCartBuilder setListing(Listing listing){
         listingInCart.setListing(listing);
+        return this;
     }
 
     public ListingInCartBuilder setCart(Cart cart){
         listingInCart.setCart(cart);
+        return this;
     }
 
     public ListingInCart build(){
