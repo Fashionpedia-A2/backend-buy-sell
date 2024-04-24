@@ -1,6 +1,6 @@
 package id.ac.ui.cs.advprog.backendbuysell;
 
-
+import id.ac.ui.cs.advprog.backendbuysell.model.Listing;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -10,15 +10,15 @@ class ListingTest {
     @BeforeEach
     void setUp(){
         this.listing = new Listing();
-        this.listing.setId("eb558e9f-1c39-460e-8860-71af6af63bd6");
+        this.listing.setStock(10);
         this.listing.setName("Baju Sefriano");
     }
     @Test
-    void testGetProductId(){
-        assertEquals("eb558e9f-1c39-460e-8860-71af6af63bd6", this.listing.getId());
+    void testGetListingStock(){
+        assertEquals(10, this.listing.getStock());
     }
     @Test
-    void testGetProductName() {
+    void testGetListingName() {
         assertEquals("Baju Sefriano", this.listing.getName());
     }
 

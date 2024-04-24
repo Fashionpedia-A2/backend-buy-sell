@@ -23,6 +23,8 @@ repositories {
     mavenCentral()
 }
 
+val junitJupiterVersion = "5.9.1"
+
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-thymeleaf")
     implementation("org.springframework.boot:spring-boot-starter-web")
@@ -32,13 +34,24 @@ dependencies {
     annotationProcessor("org.projectlombok:lombok")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
 
-//    implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+    implementation("org.springframework.boot:spring-boot-starter-data-jpa")
 //    implementation("org.springframework.boot:spring-boot-starter-data-jdbc")
 //    implementation("org.springframework.boot:spring-boot-starter-jdbc")
-//    runtimeOnly("org.postgresql:postgresql")
+    runtimeOnly("org.postgresql:postgresql")
+    testImplementation("org.junit.jupiter:junit-jupiter-api:$junitJupiterVersion")
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:$junitJupiterVersion")
 }
 
-tasks.withType<Test> {
+tasks.register<Test>("unitTest"){
+    description = "Runs unit tests."
+    group = "verification"
+
+    filter{
+        excludeTestsMatching("*FunctionalTest")
+    }
+}
+
+tasks.withType<Test>().configureEach{
     useJUnitPlatform()
 }
 
