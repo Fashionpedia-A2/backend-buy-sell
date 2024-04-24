@@ -6,7 +6,6 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.UUID;
 
 @Entity
 @Table(name = "listing")
@@ -15,7 +14,7 @@ import java.util.UUID;
 public class Listing {
     @Id
     @GeneratedValue
-    private String id;
+    private Long id;
 
     @Column(name = "name", nullable = false)
     private String name;
@@ -48,7 +47,6 @@ public class Listing {
     private String description;
 
     public Listing(String name, String sellerId, int stock, Long price) {
-        setId(UUID.randomUUID().toString());
         setName(name);
         setSellerId(sellerId);
         setStock(stock);
