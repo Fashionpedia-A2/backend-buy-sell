@@ -2,10 +2,11 @@ package id.ac.ui.cs.advprog.backendbuysell.model;
 
 import id.ac.ui.cs.advprog.backendbuysell.enums.ListingCondition;
 import id.ac.ui.cs.advprog.backendbuysell.enums.ListingStatus;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-
 
 @Entity
 @Table(name = "listing")
@@ -13,7 +14,7 @@ import lombok.Setter;
 @Setter
 public class Listing {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(name = "name", nullable = false)
@@ -51,7 +52,7 @@ public class Listing {
         setSellerId(sellerId);
         setStock(stock);
         setPrice(price);
-        setStatus("PENDING");
+        setStatus(ListingStatus.PENDING.getValue());
     }
 
     public Listing() {
@@ -86,6 +87,16 @@ public class Listing {
             this.condition = condition;
         } else {
             throw new IllegalArgumentException("Invalid listing condition");
+        }
+    }
+
+    @Override
+    public String toString() {
+        ObjectMapper om = new ObjectMapper();
+        try {
+            return om.writeValueAsString(this);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
         }
     }
 }
