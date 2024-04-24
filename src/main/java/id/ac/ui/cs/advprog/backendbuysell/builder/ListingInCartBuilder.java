@@ -1,5 +1,8 @@
-package id.ac.ui.cs.advprog.backendbuysell.model;
+package id.ac.ui.cs.advprog.backendbuysell.builder;
 
+import id.ac.ui.cs.advprog.backendbuysell.model.Cart;
+import id.ac.ui.cs.advprog.backendbuysell.model.Listing;
+import id.ac.ui.cs.advprog.backendbuysell.model.ListingInCart;
 import lombok.Setter;
 
 
