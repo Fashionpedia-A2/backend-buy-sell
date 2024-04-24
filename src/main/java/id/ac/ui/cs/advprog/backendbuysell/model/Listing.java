@@ -1,5 +1,6 @@
 package id.ac.ui.cs.advprog.backendbuysell.model;
 
+import id.ac.ui.cs.advprog.backendbuysell.enums.ListingStatus;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -69,5 +70,14 @@ public class Listing {
             throw new IllegalArgumentException("Price must be non-negative number");
         }
         this.price = price;
+    }
+
+    public void setStatus(String status){
+        status = status.toUpperCase();
+        if(ListingStatus.contains(status)){
+            this.status = status;
+        } else {
+            throw new IllegalArgumentException("Invalid listing status");
+        }
     }
 }
