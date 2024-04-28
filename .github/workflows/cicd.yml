@@ -75,6 +75,8 @@ jobs:
           export SPRING_PROFILES_ACTIVE=test
 
       - name: Test with Gradle
+        env:
+          SPRING_PROFILES_ACTIVE: test
         run: |
           gradle check --info --stacktrace
           gradle test
