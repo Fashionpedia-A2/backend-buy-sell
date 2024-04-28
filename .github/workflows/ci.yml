@@ -56,9 +56,9 @@ jobs:
         ports:
           - 5432:5432
         env:
-          JDBC_DATABASE_URL: ${{ secrets.JDBC_DATABASE_URL }}
-          JDBC_DATABASE_USERNAME: ${{ secrets.JDBC_DATABASE_USERNAME }}
-          JDBC_DATABASE_PASSWORD: ${{ secrets.JDBC_DATABASE_PASSWORD }}
+          POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
+          POSTGRES_USER: ${{ secrets.JDBC_DATABASE_USERNAME }}
+          POSTGRES_PASSWORD: ${{ secrets.JDBC_DATABASE_PASSWORD }}
 
     steps:
       - name: Checkout code
