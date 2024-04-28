@@ -32,12 +32,10 @@ jobs:
       - name: Debug database
         run: echo "url= ${{ secrets.JDBC_DATABASE_URL }} , username= ${{ secrets.JDBC_DATABASE_USERNAME }} , pass= ${{ secrets.JDBC_DATABASE_PASSWORD }}, empty= ${{ secrets.IDKLOL }}, production = ${{ secrets.PRODUCTION }} psql db = ${{ secrets.POSTGRES_DB }} psql user = ${{ secrets.POSTGRES_USER }} pass = ${{ secrets.POSTGRES_PASSWORD }}, kalo pake env= ${{ env.POSTGRES_PASSWORD }}"
 
-      - name: Check PostgreSQL service
-        run: |
-            echo "Checking PostgreSQL service..."
-            pg_isready -h postgres -p 5432 -U postgres
-            echo "Pinging postgres host..."
-            ping -c 4 postgres
+      - name: Connect to PostgreSQL service
+        run: psql -h postgres -p 5432 -U postgres -d postgres -c 'SELECT 1'
+        env:
+          PGPASSWORD: postgres
 
       - name: Build with Gradle
         env:
