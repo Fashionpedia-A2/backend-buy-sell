@@ -15,9 +15,9 @@ jobs:
         ports:
           - 5432:5432
         env:
-          POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
-          POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
-          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+          POSTGRES_DB: tesfashion
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
 
     steps:
       - name: Checkout code
@@ -30,10 +30,12 @@ jobs:
           java-version: "21"
           cache: "gradle"
 
-      - name: Debug database
-        run: echo "url= ${{ secrets.JDBC_DATABASE_URL }} , username= ${{ secrets.JDBC_DATABASE_USERNAME }} , pass= ${{ secrets.JDBC_DATABASE_PASSWORD }}, empty= ${{ secrets.IDKLOL }}, production = ${{ secrets.PRODUCTION }} psql db = ${{ secrets.POSTGRES_DB }} psql user = ${{ secrets.POSTGRES_USER }} pass = ${{ secrets.POSTGRES_PASSWORD }}"
-
       - name: Build with Gradle
+        env:
+          JDBC_DATABASE_URL: ${{ secrets.JDBC_DATABASE_URL }}
+          JDBC_DATABASE_USERNAME: ${{ secrets.JDBC_DATABASE_USERNAME }}
+          JDBC_DATABASE_PASSWORD: ${{ secrets.JDBC_DATABASE_PASSWORD }}
+          PRODUCTION: ${{ secrets.PRODUCTION }}
         run: chmod +x ./gradlew && ./gradlew build
 
       - name: Upload Artifact
@@ -53,9 +55,9 @@ jobs:
         ports:
           - 5432:5432
         env:
-          POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
-          POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
-          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+          POSTGRES_DB: tesfashion
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
 
     steps:
       - name: Checkout code
