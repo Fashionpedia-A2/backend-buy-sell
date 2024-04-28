@@ -31,7 +31,7 @@ jobs:
           cache: "gradle"
 
       - name: Debug database
-        run: echo "url= ${{ secrets.JDBC_DATABASE_URL }} , username= ${{ secrets.JDBC_DATABASE_USERNAME }} , pass= ${{ secrets.JDBC_DATABASE_PASSWORD }}, empty= ${{ secrets.IDKLOL }}, production = ${{ secrets.PRODUCTION }} psql db = ${{ secrets.POSTGRES_DB }} psql user = ${{ secrets.POSTGRES_USER }} pass = ${{ secrets.POSTGRES_PASSWORD }}"
+        run: echo "url= ${{ secrets.JDBC_DATABASE_URL }} , username= ${{ secrets.JDBC_DATABASE_USERNAME }} , pass= ${{ secrets.JDBC_DATABASE_PASSWORD }}, empty= ${{ secrets.IDKLOL }}, production = ${{ secrets.PRODUCTION }} psql db = ${{ secrets.POSTGRES_DB }} psql user = ${{ secrets.POSTGRES_USER }} pass = ${{ secrets.POSTGRES_PASSWORD }}, kalo pake env= ${{ env.POSTGRES_PASSWORD }}"
       - name: Build with Gradle
         run: chmod +x ./gradlew && ./gradlew build
 
