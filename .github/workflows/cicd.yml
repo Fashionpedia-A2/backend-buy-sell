@@ -55,7 +55,7 @@ jobs:
         ports:
           - 5432:5432
         env:
-          POSTGRES_DB: tesfashion
+          POSTGRES_DB: postgres
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: postgres
 
