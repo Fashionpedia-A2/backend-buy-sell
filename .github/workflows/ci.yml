@@ -61,6 +61,12 @@ jobs:
           POSTGRES_PASSWORD: ${{ secrets.JDBC_DATABASE_PASSWORD }}
 
     steps:
+      - name: Check PostgreSQL service
+        run: |
+              echo "Checking PostgreSQL service..."
+              pg_isready -h postgres -p 5432 -U postgres
+              echo "Pinging postgres host..."
+              ping -c 4 postgres
       - name: Checkout code
         uses: actions/checkout@v2
 
