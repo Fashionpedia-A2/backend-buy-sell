@@ -10,16 +10,12 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Controller
+@RestController
 @RequestMapping("/buyer")
 public class BuySellController {
 
     @Autowired
     private ListingService listingService;
-    @RequestMapping("")
-    public String main(){
-        return "uglyhtml";
-    }
 
     @GetMapping("/listing")
     public ResponseEntity<List<Listing>> getAllListing() {
