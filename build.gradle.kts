@@ -42,6 +42,13 @@ dependencies {
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:$junitJupiterVersion")
     testImplementation("com.h2database:h2")
     //testImplementation("com.h2database:h2:2.1.214")
+
+    implementation("org.springframework.boot:spring-boot-starter-security")
+    implementation("com.google.guava:guava:30.1-jre")
+    implementation("io.jsonwebtoken:jjwt-api:0.11.5")
+    runtimeOnly("io.jsonwebtoken:jjwt-impl:0.11.5")
+    runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.11.5")
+    compileOnly("javax.servlet:javax.servlet-api:4.0.1")
 }
 
 tasks.register<Test>("unitTest"){
