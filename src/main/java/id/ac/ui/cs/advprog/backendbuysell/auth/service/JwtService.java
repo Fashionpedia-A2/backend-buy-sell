@@ -25,7 +25,7 @@ public class JwtService {
     private static final String SECRET_KEY = "645367566B59703373367639792F423F4528482B4D6251655468576D5A713474";
     @Autowired
     private UserRepository userRepository;
-    public User extractUserProfile(String token){
+    public User extractUser(String token){
         // Extract the username from the token
         String username = extractUsername(token);
         Optional<User> userOptional = userRepository.findByEmail(username);

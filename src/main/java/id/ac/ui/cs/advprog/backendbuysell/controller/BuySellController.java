@@ -12,7 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 import java.util.List;
 import java.util.Optional;
@@ -38,7 +38,7 @@ public class BuySellController {
 
         String token = header.substring(7);
 
-        User user = jwtService.extractUserProfile(token);
+        User user = jwtService.extractUser(token);
         if (!jwtService.isTokenValid(token, user)) {
             throw new RuntimeException("Invalid token");
         }
