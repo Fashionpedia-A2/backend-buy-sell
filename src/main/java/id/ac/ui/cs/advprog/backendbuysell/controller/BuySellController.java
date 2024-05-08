@@ -80,4 +80,5 @@ public class BuySellController {
         listingService.delete(id);
         return ResponseEntity.ok("successfuly deleted");
     }
+
 }
