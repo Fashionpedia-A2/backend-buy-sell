@@ -5,8 +5,11 @@ import id.ac.ui.cs.advprog.backendbuysell.auth.model.User;
 import id.ac.ui.cs.advprog.backendbuysell.auth.model.UserProfile;
 import id.ac.ui.cs.advprog.backendbuysell.auth.repository.UserProfileRepository;
 import id.ac.ui.cs.advprog.backendbuysell.auth.service.JwtService;
+import id.ac.ui.cs.advprog.backendbuysell.dto.SellerDetailsDto;
 import id.ac.ui.cs.advprog.backendbuysell.model.Listing;
+import id.ac.ui.cs.advprog.backendbuysell.model.Seller;
 import id.ac.ui.cs.advprog.backendbuysell.service.ListingService;
+import id.ac.ui.cs.advprog.backendbuysell.service.SellerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,6 +31,9 @@ public class BuySellController {
 
     @Autowired
     private ListingService listingService;
+
+    @Autowired
+    private SellerService sellerService;
 
 
     @GetMapping("/protected")
@@ -54,6 +60,17 @@ public class BuySellController {
         return ResponseEntity.ok(list);
     }
 
+    @GetMapping("/seller/{sellerId}")
+    public ResponseEntity<SellerDetailsDto> getSellerDetails(@PathVariable Long sellerId) {
+        Seller seller = sellerService.findById(sellerId);
+        if (seller == null) {
+            return ResponseEntity.notFound().build();
+        }
+        SellerDetailsDto details = new SellerDetailsDto(seller);
+
+        return ResponseEntity.ok(details);
+    }
+
     @PostMapping("/listing/create")
     public ResponseEntity<Object> create(@RequestBody Listing listing) {
         //listingService.create(new Listing("hoho", "url", 12, 123123L, "besar", "baru lah"));
@@ -64,8 +81,6 @@ public class BuySellController {
         } else {
             return ResponseEntity.ok(l);
         }
-
-
     }
 
     @PostMapping("/listing/save")
@@ -82,5 +97,7 @@ public class BuySellController {
         listingService.delete(id);
         return ResponseEntity.ok("successfuly deleted");
     }
+
+
 
 }

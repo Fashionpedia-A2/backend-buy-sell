@@ -41,6 +41,11 @@ public class Listing {
     @Setter
     @Column(name="condition", nullable = false)
     private String condition;
+
+    @ManyToOne
+    @JoinColumn(name = "seller_id")
+    private Seller seller;
+
     public Listing(){
 
     }
