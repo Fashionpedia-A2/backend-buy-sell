@@ -2,11 +2,14 @@ package id.ac.ui.cs.advprog.backendbuysell.model;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.validation.BeanPropertyBindingResult;
+import org.springframework.validation.BindingResult;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class ListingTest {
     Listing listing;
+    BindingResult bindingResult;
 
     @BeforeEach
     void setup() {
@@ -14,64 +17,126 @@ public class ListingTest {
         this.listing.setCategory("Baju Muslim Pria");
         this.listing.setImageUrl("https://bajukokopria.com");
         this.listing.setSize("M");
-//        this.listing.setCondition("new");
-//        this.listing.setStatus("verified");
         this.listing.setDescription("Lorem Ipsum");
+        this.bindingResult = new BeanPropertyBindingResult(this.listing, "listing");
+    }
+
+    @Test
+    void testMinimumRequiredField(){
+        Listing listing = new Listing("Baju Koko Shimmer", "660bd2da-ed38-41c0-af02-797556f0b9a1", 100, 100_000L);;
+        listing.validate(bindingResult);
+        assertFalse(bindingResult.hasErrors());
+    }
+
+    @Test
+    void testNullName(){
+        listing.setName(null);
+        listing.validate(bindingResult);
+        assertTrue(bindingResult.hasErrors());
+    }
+
+    @Test
+    void testBlankName(){
+        listing.setName("   ");
+        listing.validate(bindingResult);
+        assertTrue(bindingResult.hasErrors());
+    }
+
+    @Test
+    void testNullSellerId(){
+        listing.setSellerId(null);
+        listing.validate(bindingResult);
+        assertTrue(bindingResult.hasErrors());
+    }
+
+    @Test
+    void testBlankSellerId(){
+        listing.setSellerId("   ");
+        listing.validate(bindingResult);
+        assertTrue(bindingResult.hasErrors());
+    }
+
+    @Test
+    void testNullStock(){
+        listing.setStock(null);
+        listing.validate(bindingResult);
+        assertTrue(bindingResult.hasErrors());
     }
 
     @Test
     void testSetNonNegativeStock() {
         this.listing.setStock(0);
-        assertEquals(0, this.listing.getStock());
+        this.listing.validate(bindingResult);
+        assertFalse(bindingResult.hasErrors());
     }
 
     @Test
     void testSetNegativeStock() {
-        assertThrows(IllegalArgumentException.class, () -> this.listing.setStock(-1));
+        this.listing.setStock(-1);
+        this.listing.validate(bindingResult);
+        assertTrue(bindingResult.hasErrors());
+    }
+
+    @Test
+    void testNullPrice(){
+        listing.setPrice(null);
+        listing.validate(bindingResult);
+        assertTrue(bindingResult.hasErrors());
     }
 
     @Test
     void testSetNonNegativePrice() {
         this.listing.setPrice(0L);
-        assertEquals(0L, this.listing.getPrice());
+        this.listing.validate(bindingResult);
+        assertFalse(bindingResult.hasErrors());
     }
 
     @Test
     void testSetNegativePrice() {
-        assertThrows(IllegalArgumentException.class, () -> this.listing.setPrice(-1L));
+        this.listing.setPrice(-1L);
+        this.listing.validate(bindingResult);
+        assertTrue(bindingResult.hasErrors());
     }
 
     @Test
     void testSetValidStatusAllCapital(){
         this.listing.setStatus("VERIFIED");
-        assertEquals("VERIFIED", this.listing.getStatus());
+        this.listing.validate(bindingResult);
+        assertFalse(bindingResult.hasErrors());
     }
 
     @Test
     void testSetValidStatusLowerCase(){
         this.listing.setStatus("PenDIng");
-        assertEquals("PENDING", this.listing.getStatus());
+        this.listing.validate(bindingResult);
+        assertFalse(bindingResult.hasErrors());
     }
 
     @Test
     void testSetInvalidStatus() {
-        assertThrows(IllegalArgumentException.class, () -> this.listing.setStatus("Jomblo"));
+        this.listing.setStatus("Jomblo");
+        this.listing.validate(bindingResult);
+        assertTrue(bindingResult.hasErrors());
     }
 
     @Test
     void testSetValidConditionAllCapital(){
         this.listing.setCondition("NEW");
-        assertEquals("NEW", this.listing.getCondition());
+        this.listing.validate(bindingResult);
+        assertFalse(bindingResult.hasErrors());
     }
 
     @Test
     void testSetValidConditionLowerCase(){
         this.listing.setCondition("sAtisFactoRY");
-        assertEquals("SATISFACTORY", this.listing.getCondition());
+        this.listing.validate(bindingResult);
+        assertFalse(bindingResult.hasErrors());
     }
 
     @Test
     void testSetInvalidCondition() {
-        assertThrows(IllegalArgumentException.class, () -> this.listing.setCondition("Jelek"));
+        this.listing.setCondition("Jelek");
+        this.listing.validate(bindingResult);
+        assertTrue(bindingResult.hasErrors());
     }
 }
