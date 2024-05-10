@@ -3,6 +3,8 @@ package id.ac.ui.cs.advprog.backendbuysell.service;
 import id.ac.ui.cs.advprog.backendbuysell.dto.ListingSearchRequestDTO;
 import id.ac.ui.cs.advprog.backendbuysell.enums.ListingCondition;
 import id.ac.ui.cs.advprog.backendbuysell.enums.ListingStatus;
+import id.ac.ui.cs.advprog.backendbuysell.exception.FieldValidationException;
+import id.ac.ui.cs.advprog.backendbuysell.exception.ForbiddenException;
 import id.ac.ui.cs.advprog.backendbuysell.model.Listing;
 import id.ac.ui.cs.advprog.backendbuysell.repository.ListingRepository;
 import org.junit.jupiter.api.*;
@@ -33,6 +35,7 @@ public class ListingServiceImplTest {
     ListingServiceImpl service;
 
     List<Listing> listings;
+    String sellerId;
     ListingSearchRequestDTO searchCriteriaDTO = ListingSearchRequestDTO.builder().pageable(PageRequest.of(0, 20)).build();
 
     @BeforeEach
@@ -67,16 +70,17 @@ public class ListingServiceImplTest {
         this.listings.add(listing1);
         this.listings.add(listing2);
         this.listings.add(listing3);
+
+        this.sellerId = listing1.getSellerId();
     }
 
 
     @Test
     void testCreateListing() {
         Listing listing = this.listings.getFirst();
-        doReturn(false).when(repository).existsById(any(Long.class));
         doReturn(listing).when(repository).save(any(Listing.class));
 
-        Listing savedListing = service.create(listing);
+        Listing savedListing = service.create(listing, this.sellerId);
         verify(repository, times(1)).save(any(Listing.class));
         assertEquals(listing.getId(), savedListing.getId());
     }
@@ -125,12 +129,12 @@ public class ListingServiceImplTest {
         updatedRequest.setStatus(original.getStatus());
         updatedRequest.setDescription(original.getDescription());
 
-        doReturn(true).when(repository).existsById(any(Long.class));
+        doReturn(Optional.of(original)).when(repository).findById(any(Long.class));
         doReturn(updatedRequest).when(repository).save(any(Listing.class));
 
-        Listing updatedResult = service.update(original.getId(), updatedRequest);
+        Listing updatedResult = service.update(original.getId(), updatedRequest, updatedRequest.getSellerId());
 
-        verify(repository, times(1)).existsById(any(Long.class));
+        verify(repository, times(1)).findById(any(Long.class));
         verify(repository, times(1)).save(any(Listing.class));
 
         assertEquals(original.getId(), updatedResult.getId());
@@ -142,8 +146,16 @@ public class ListingServiceImplTest {
     @Test
     void testUpdateListingIfIdNotFound() {
         Listing listing = this.listings.getFirst();
-        doReturn(false).when(repository).existsById(any(Long.class));
-        assertThrows(NoSuchElementException.class, () -> service.update(listing.getId(), listing));
+        doReturn(Optional.empty()).when(repository).findById(any(Long.class));
+        assertThrows(NoSuchElementException.class, () -> service.update(listing.getId(), listing, this.sellerId));
+    }
+
+    @Test
+    void testUpdateListingByUnauthorizedUser(){
+        Listing listing = this.listings.getFirst();
+        doReturn(Optional.of(listing)).when(repository).findById(any(Long.class));
+        assertThrows(ForbiddenException.class, () -> service.update(listing.getId(), listing, "hacker"));
+        verify(repository, times(0)).save(any(Listing.class));
     }
 
     @Test
@@ -152,7 +164,7 @@ public class ListingServiceImplTest {
         System.out.println(listing.getId());
         doReturn(Optional.of(listing)).when(repository).findById(any(Long.class));
 
-        Listing deletedListing = service.delete(listing.getId());
+        Listing deletedListing = service.delete(listing.getId(), this.sellerId);
 
         verify(repository, times(1)).deleteById(any(Long.class));
         assertEquals(listing.getId(), deletedListing.getId());
@@ -161,7 +173,15 @@ public class ListingServiceImplTest {
     @Test
     void testDeleteListingIfIdNotFound() {
         doReturn(Optional.empty()).when(repository).findById(any(Long.class));
-        assertThrows(NoSuchElementException.class, () -> service.delete(666L));
+        assertThrows(NoSuchElementException.class, () -> service.delete(666L, this.sellerId));
+    }
+
+    @Test
+    void testDeleteListingByUnauthorizedUser(){
+        Listing listing = this.listings.getFirst();
+        doReturn(Optional.of(listing)).when(repository).findById(any(Long.class));
+        assertThrows(ForbiddenException.class, () -> service.delete(listing.getId(), "hacker"));
+        verify(repository, times(0)).deleteById(any(Long.class));
     }
 
     @Test
@@ -172,7 +192,7 @@ public class ListingServiceImplTest {
                 activeListings.add(listing);
             }
         }
-        Page<Listing> page = new PageImpl(activeListings);
+        Page<Listing> page = new PageImpl<>(activeListings);
         doReturn(page).when(repository).findAll(ArgumentMatchers.<Specification<Listing>>any(), any(Pageable.class));
 
         List<Listing> result = service.getActiveListings(this.searchCriteriaDTO).getListings();
@@ -203,7 +223,7 @@ public class ListingServiceImplTest {
         doReturn(Optional.of(listing)).when(repository).findById(any(Long.class));
         doReturn(listing).when(repository).save(any(Listing.class));
 
-        service.setStatus(listing.getId(), ListingStatus.REJECTED.getValue());
+        service.setStatus(listing.getId(), ListingStatus.REJECTED.getValue(), this.sellerId);
         verify(repository, times(1)).save(any(Listing.class));
 
         Listing result = service.getById(listing.getId()).orElseThrow();
@@ -215,7 +235,7 @@ public class ListingServiceImplTest {
         doReturn(Optional.empty()).when(repository).findById(any(Long.class));
 
         assertThrows(NoSuchElementException.class, () -> {
-            service.setStatus(123L, ListingStatus.REJECTED.getValue());
+            service.setStatus(123L, ListingStatus.REJECTED.getValue(), this.sellerId);
         });
 
         verify(repository, times(0)).save(any(Listing.class));
@@ -226,9 +246,20 @@ public class ListingServiceImplTest {
         Listing listing = this.listings.getFirst();
         doReturn(Optional.of(listing)).when(repository).findById(any(Long.class));
 
-        assertThrows(IllegalArgumentException.class, () -> {
-            service.setStatus(listing.getId(), "DUMMY");
+        assertThrows(FieldValidationException.class, () -> {
+            service.setStatus(listing.getId(), "DUMMY", this.sellerId);
         });
         verify(repository, times(0)).save(any(Listing.class));
+    }
+
+    @Test
+    void testSetListingStatusByUnauthorizedUser(){
+        Listing listing = this.listings.getFirst();
+        doReturn(Optional.of(listing)).when(repository).findById(any(Long.class));
+
+        assertThrows(ForbiddenException.class, () -> {
+            service.setStatus(listing.getId(), ListingStatus.REJECTED.getValue(), "hacker");
+        });
+        verify(repository, times(0)).deleteById(any(Long.class));
     }
 }
