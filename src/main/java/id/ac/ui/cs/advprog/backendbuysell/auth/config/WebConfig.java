@@ -13,7 +13,7 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(org.springframework.web.servlet.config.annotation.CorsRegistry registry) {
         registry.addMapping("/**")
-                .allowedOrigins("http://fashionpedia.my.id/", "http://127.0.0.1:8000") // Replace with allowed origins
+                .allowedOrigins("*")
                 .allowedMethods("GET", "POST", "PUT", "DELETE") // Allowed methods
                 .allowedHeaders("*") // Adjust allowed headers as needed
                 .allowCredentials(true); // Allow cookies (optional)
