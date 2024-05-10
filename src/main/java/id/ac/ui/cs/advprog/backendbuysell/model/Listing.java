@@ -50,13 +50,14 @@ public class Listing {
 
     }
 
-    public Listing(String name, String imageUrl, int stock, Long price, String size, String condition){
+    public Listing(String name, String imageUrl, int stock, Long price, String size, String condition, Seller seller){
         this.name = name;
         this.imageUrl = imageUrl;
         this.stock = stock;
         this.price = price;
         this.size = size;
         this.condition = condition;
+        this.seller = seller;
     }
 
     @Override

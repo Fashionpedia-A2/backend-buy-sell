@@ -5,6 +5,7 @@ import id.ac.ui.cs.advprog.backendbuysell.auth.model.User;
 import id.ac.ui.cs.advprog.backendbuysell.auth.model.UserProfile;
 import id.ac.ui.cs.advprog.backendbuysell.auth.repository.UserProfileRepository;
 import id.ac.ui.cs.advprog.backendbuysell.auth.service.JwtService;
+import id.ac.ui.cs.advprog.backendbuysell.dto.ListingDetailsDto;
 import id.ac.ui.cs.advprog.backendbuysell.dto.SellerDetailsDto;
 import id.ac.ui.cs.advprog.backendbuysell.model.Listing;
 import id.ac.ui.cs.advprog.backendbuysell.model.Seller;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
@@ -55,9 +57,13 @@ public class BuySellController {
     }
 
     @GetMapping("/listing")
-    public ResponseEntity<List<Listing>> getAllListing() {
+    public ResponseEntity<List<ListingDetailsDto>> getAllListing() {
         List<Listing> list = listingService.findAll();
-        return ResponseEntity.ok(list);
+        List<ListingDetailsDto> listingDetailsDtoList = new LinkedList<ListingDetailsDto>();
+        for(int i = 0; i < list.size(); i++){
+            listingDetailsDtoList.add(new ListingDetailsDto(list.get(i)));
+        }
+        return ResponseEntity.ok(listingDetailsDtoList);
     }
 
     @GetMapping("/seller/{sellerId}")
