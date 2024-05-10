@@ -9,8 +9,6 @@ import id.ac.ui.cs.advprog.backendbuysell.utils.ListingSearchQueryBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
@@ -34,12 +32,7 @@ public class ListingServiceImpl implements ListingService {
 
     public ListingSearchResponseDTO getAll(ListingSearchRequestDTO request) {
         Specification<Listing> specification = ListingSearchQueryBuilder.buildSpecification(request);
-        Pageable pageable = PageRequest.of(
-                request.getPageNumber(),
-                request.getItemsPerPage(),
-                ListingSearchQueryBuilder.buildSort(request)
-        );
-        Page<Listing> page = listingRepository.findAll(specification, pageable);
+        Page<Listing> page = listingRepository.findAll(specification, request.getPageable());
         return ListingSearchResponseDTO
                 .builder()
                 .listings(page.getContent())

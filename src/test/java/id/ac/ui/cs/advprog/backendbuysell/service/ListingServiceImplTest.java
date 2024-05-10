@@ -14,6 +14,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 
@@ -32,10 +33,7 @@ public class ListingServiceImplTest {
     ListingServiceImpl service;
 
     List<Listing> listings;
-    ListingSearchRequestDTO searchCriteriaDTO = ListingSearchRequestDTO.builder()
-            .pageNumber(0)
-            .itemsPerPage(100)
-            .build();
+    ListingSearchRequestDTO searchCriteriaDTO = ListingSearchRequestDTO.builder().pageable(PageRequest.of(0, 20)).build();
 
     @BeforeEach
     public void setUp() {

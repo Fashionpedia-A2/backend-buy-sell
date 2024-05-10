@@ -3,8 +3,6 @@ package id.ac.ui.cs.advprog.backendbuysell.utils;
 import id.ac.ui.cs.advprog.backendbuysell.dto.ListingSearchRequestDTO;
 import id.ac.ui.cs.advprog.backendbuysell.model.Listing;
 import jakarta.persistence.criteria.Predicate;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 
@@ -48,14 +46,5 @@ public class ListingSearchQueryBuilder {
 
             return builder.and(predicates.toArray(new Predicate[]{}));
         };
-    }
-
-    public static Sort buildSort(ListingSearchRequestDTO searchRequest) {
-        String sortBy = searchRequest.getSortDirection();
-        if (sortBy == null) {
-            return Sort.unsorted();
-        }
-        Sort.Direction direction = (searchRequest.getSortDirection().equals("desc") ? Sort.Direction.DESC : Sort.Direction.ASC);
-        return Sort.by(direction, sortBy);
     }
 }
