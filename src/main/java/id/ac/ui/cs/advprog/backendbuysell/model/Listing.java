@@ -13,7 +13,9 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.Errors;
 import org.springframework.validation.FieldError;
 
 import java.util.Set;
@@ -83,9 +85,10 @@ public class Listing {
         if (condition != null) this.condition = condition.toUpperCase();
     }
 
-    public void validate(BindingResult bindingResult) {
-        Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
+    public Errors validate() {
+        BindingResult bindingResult = new BeanPropertyBindingResult(this, "listing");
 
+        Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
         Set<ConstraintViolation<Listing>> violations = validator.validate(this);
         for (ConstraintViolation<Listing> violation : violations) {
             bindingResult.addError(new FieldError("listing", violation.getPropertyPath().toString(), violation.getMessage()));
@@ -95,6 +98,7 @@ public class Listing {
         validatePrice(bindingResult);
         validateStatus(bindingResult);
         validateCondition(bindingResult);
+        return bindingResult;
     }
 
     public void validateStock(BindingResult bindingResult) {
