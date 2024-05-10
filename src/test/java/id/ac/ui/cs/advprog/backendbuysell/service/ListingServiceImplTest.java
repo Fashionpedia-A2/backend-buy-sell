@@ -81,16 +81,6 @@ public class ListingServiceImplTest {
         assertEquals(listing.getId(), savedListing.getId());
     }
 
-    @Test
-    void testCreateListingIfAlreadyExist() {
-        Listing listing = this.listings.getFirst();
-        doReturn(false).when(repository).existsById(any(Long.class));
-        doReturn(listing).when(repository).save(any(Listing.class));
-        service.create(listing);
-
-        doReturn(true).when(repository).existsById(any(Long.class));
-        assertThrows(DataIntegrityViolationException.class, () -> service.create(listing));
-    }
 
     @Test
     void testGetAllListings() {

@@ -24,9 +24,6 @@ public class ListingServiceImpl implements ListingService {
     ListingRepository listingRepository;
 
     public Listing create(Listing listing) {
-        if (listingRepository.existsById(listing.getId())) {
-            throw new DataIntegrityViolationException("");
-        }
         return listingRepository.save(listing);
     }
 
