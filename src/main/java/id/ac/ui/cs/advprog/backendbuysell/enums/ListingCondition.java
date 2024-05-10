@@ -6,8 +6,9 @@ import lombok.Getter;
 public enum ListingCondition {
     NEW("NEW"),
     VERY_GOOD("VERY_GOOD"),
-    GOOD("VERY_GOOD"),
-    SATISFACTORY("SATISFACTORY");
+    GOOD("GOOD"),
+    SATISFACTORY("SATISFACTORY"),
+    NOT_SPECIFIED("NOT_SPECIFIED");
 
     private final String value;
 
@@ -22,5 +23,19 @@ public enum ListingCondition {
             }
         }
         return false;
+    }
+
+    public static String getString() {
+        StringBuilder result = new StringBuilder("[");
+        boolean isFirst = true;
+        for (ListingCondition condition : ListingCondition.values()) {
+            if (!isFirst) {
+                result.append(", ");
+            }
+            result.append(condition.getValue());
+            isFirst = false;
+        }
+        result.append("]");
+        return result.toString();
     }
 }
