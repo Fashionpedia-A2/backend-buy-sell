@@ -11,4 +11,18 @@ public enum OrderStatus {
     public static OrderStatus fromString(String order){
         return valueOf(order.toUpperCase());
     }
+
+    public static String getString() {
+        StringBuilder result = new StringBuilder("[");
+        boolean isFirst = true;
+        for (OrderStatus status : OrderStatus.values()) {
+            if (!isFirst) {
+                result.append(", ");
+            }
+            result.append(status.name());
+            isFirst = false;
+        }
+        result.append("]");
+        return result.toString();
+    }
 }

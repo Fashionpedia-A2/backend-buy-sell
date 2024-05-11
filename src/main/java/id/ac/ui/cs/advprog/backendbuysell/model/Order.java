@@ -34,9 +34,11 @@ public class Order {
     @Column(name = "updated_at", insertable = false, updatable = false)
     private Date updatedAt;
 
+    @NotNull
     @Column(name = "status", nullable = false)
     private String status = OrderStatus.MENUNGGU_PEMBAYARAN.name();
 
+    @NotNull
     @Column(name = "totalPrice", nullable = false)
     private Long totalPrice;
 
@@ -45,26 +47,42 @@ public class Order {
     @JoinColumn(name = "order_id", nullable = false)
     private List<ListingInOrder> listingInOrders = new ArrayList<>();
 
+    @NotNull
     @Column(name = "seller_id", nullable = false)
     private String sellerId;
 
+    @NotNull
     @Column(name = "buyer_id", nullable = false)
     private String buyerId;
 
     @Column(name = "payment_id")
     private Long paymentId;
 
+    public void setStatus(String status) {
+        this.status = (status != null) ? status.toUpperCase() : null;
+    }
 
     public void calculateTotalPrice() {
+        long totalPrice = 0L;
+        for (ListingInOrder listingInOrder : this.listingInOrders) {
+            totalPrice = Math.addExact(totalPrice, listingInOrder.getSubTotalPrice());
+        }
+        this.setTotalPrice(totalPrice);
     }
 
     public void setListingInOrders(List<ListingInOrder> listingInOrders) {
+        this.listingInOrders = listingInOrders;
+        calculateTotalPrice();
     }
 
     public void addListingInOrder(ListingInOrder listingInOrder) {
+        this.listingInOrders.add(listingInOrder);
+        calculateTotalPrice();
     }
 
     public void removeListingInOrder(ListingInOrder listingInOrder) {
+        this.listingInOrders.remove(listingInOrder);
+        calculateTotalPrice();
     }
 
     public Errors validate() {
@@ -75,6 +93,17 @@ public class Order {
             bindingResult.addError(
                     new FieldError("order", violation.getPropertyPath().toString(), violation.getMessage()));
         }
+        validateStatus(bindingResult);
         return bindingResult;
+    }
+
+    private void validateStatus(BindingResult validationResult) {
+        try {
+            if (this.status == null) return;
+            OrderStatus.fromString(this.status);
+        } catch (IllegalArgumentException e) {
+            validationResult.addError(new FieldError("order", "status",
+                                                     "Status must be one of the following value: " + OrderStatus.getString()));
+        }
     }
 }
