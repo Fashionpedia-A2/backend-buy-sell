@@ -30,7 +30,7 @@ public class ListingController {
     @GetMapping("/listing")
     public ResponseEntity<ApiResponse<ListingListResponseDTO>> getAllListings(
             ListingListRequestDTO request,
-            @PageableDefault(page = 0, size = 40) @SortDefault(sort = "name", direction = Sort.Direction.ASC) Pageable pageable) {
+            @PageableDefault(page = 0, size = 40) @SortDefault(sort = "id", direction = Sort.Direction.ASC) Pageable pageable) {
         request.setPageable(pageable);
         ListingListResponseDTO result = listingService.getAll(request);
         ApiResponse<ListingListResponseDTO> response = ApiResponse.success(result);
@@ -40,7 +40,7 @@ public class ListingController {
     @GetMapping("/buyer/listing")
     public ResponseEntity<ApiResponse<ListingListResponseDTO>> getBuyerViewListings(
             ListingListRequestDTO request,
-            @PageableDefault(page = 0, size = 40) @SortDefault(sort = "name", direction = Sort.Direction.ASC) Pageable pageable) {
+            @PageableDefault(page = 0, size = 40) @SortDefault(sort = "id", direction = Sort.Direction.ASC) Pageable pageable) {
         request.setPageable(pageable);
         ListingListResponseDTO result = listingService.getActiveListings(request);
         ApiResponse<ListingListResponseDTO> response = ApiResponse.success(result);
@@ -50,7 +50,7 @@ public class ListingController {
     @GetMapping("/seller/listing")
     public ResponseEntity<ApiResponse<ListingListResponseDTO>> getSellerListings(
             ListingListRequestDTO request,
-            @PageableDefault(page = 0, size = 40) @SortDefault(sort = "name", direction = Sort.Direction.ASC) Pageable pageable,
+            @PageableDefault(page = 0, size = 40) @SortDefault(sort = "id", direction = Sort.Direction.ASC) Pageable pageable,
             @RequestHeader("Authorization") String token) {
         String sellerId = JwtHelper.getUserIdFromToken(token);
         request.setPageable(pageable);
