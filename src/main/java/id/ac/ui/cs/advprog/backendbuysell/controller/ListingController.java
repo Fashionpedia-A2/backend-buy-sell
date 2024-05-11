@@ -1,8 +1,8 @@
 package id.ac.ui.cs.advprog.backendbuysell.controller;
 
 import id.ac.ui.cs.advprog.backendbuysell.dto.ApiResponse;
-import id.ac.ui.cs.advprog.backendbuysell.dto.ListingSearchRequestDTO;
-import id.ac.ui.cs.advprog.backendbuysell.dto.ListingSearchResponseDTO;
+import id.ac.ui.cs.advprog.backendbuysell.dto.ListingListRequestDTO;
+import id.ac.ui.cs.advprog.backendbuysell.dto.ListingListResponseDTO;
 import id.ac.ui.cs.advprog.backendbuysell.exception.FieldValidationException;
 import id.ac.ui.cs.advprog.backendbuysell.exception.ForbiddenException;
 import id.ac.ui.cs.advprog.backendbuysell.model.Listing;
@@ -28,34 +28,34 @@ public class ListingController {
     ListingService listingService;
 
     @GetMapping("/listing")
-    public ResponseEntity<ApiResponse<ListingSearchResponseDTO>> getAllListings(
-            ListingSearchRequestDTO request,
+    public ResponseEntity<ApiResponse<ListingListResponseDTO>> getAllListings(
+            ListingListRequestDTO request,
             @PageableDefault(page = 0, size = 40) @SortDefault(sort = "name", direction = Sort.Direction.ASC) Pageable pageable) {
         request.setPageable(pageable);
-        ListingSearchResponseDTO result = listingService.getAll(request);
-        ApiResponse<ListingSearchResponseDTO> response = ApiResponse.success(result);
+        ListingListResponseDTO result = listingService.getAll(request);
+        ApiResponse<ListingListResponseDTO> response = ApiResponse.success(result);
         return ResponseEntity.ok(response);
     }
 
     @GetMapping("/buyer/listing")
-    public ResponseEntity<ApiResponse<ListingSearchResponseDTO>> getBuyerViewListings(
-            ListingSearchRequestDTO request,
+    public ResponseEntity<ApiResponse<ListingListResponseDTO>> getBuyerViewListings(
+            ListingListRequestDTO request,
             @PageableDefault(page = 0, size = 40) @SortDefault(sort = "name", direction = Sort.Direction.ASC) Pageable pageable) {
         request.setPageable(pageable);
-        ListingSearchResponseDTO result = listingService.getActiveListings(request);
-        ApiResponse<ListingSearchResponseDTO> response = ApiResponse.success(result);
+        ListingListResponseDTO result = listingService.getActiveListings(request);
+        ApiResponse<ListingListResponseDTO> response = ApiResponse.success(result);
         return ResponseEntity.ok(response);
     }
 
     @GetMapping("/seller/listing")
-    public ResponseEntity<ApiResponse<ListingSearchResponseDTO>> getSellerListings(
-            ListingSearchRequestDTO request,
+    public ResponseEntity<ApiResponse<ListingListResponseDTO>> getSellerListings(
+            ListingListRequestDTO request,
             @PageableDefault(page = 0, size = 40) @SortDefault(sort = "name", direction = Sort.Direction.ASC) Pageable pageable,
             @RequestHeader("Authorization") String token) {
         String sellerId = JwtHelper.getUserIdFromToken(token);
         request.setPageable(pageable);
-        ListingSearchResponseDTO result = listingService.getSellerListings(sellerId, request);
-        ApiResponse<ListingSearchResponseDTO> response = ApiResponse.success(result);
+        ListingListResponseDTO result = listingService.getSellerListings(sellerId, request);
+        ApiResponse<ListingListResponseDTO> response = ApiResponse.success(result);
         return ResponseEntity.ok(response);
     }
 

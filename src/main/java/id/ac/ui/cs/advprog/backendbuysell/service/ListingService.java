@@ -1,18 +1,16 @@
 package id.ac.ui.cs.advprog.backendbuysell.service;
 
-import id.ac.ui.cs.advprog.backendbuysell.dto.ListingSearchRequestDTO;
-import id.ac.ui.cs.advprog.backendbuysell.dto.ListingSearchResponseDTO;
+import id.ac.ui.cs.advprog.backendbuysell.dto.ListingListRequestDTO;
+import id.ac.ui.cs.advprog.backendbuysell.dto.ListingListResponseDTO;
 import id.ac.ui.cs.advprog.backendbuysell.model.Listing;
-import org.springframework.data.domain.Pageable;
 
 
-import java.util.List;
 import java.util.Optional;
 
 public interface ListingService {
     Listing create(Listing listing, String sellerId);
 
-    ListingSearchResponseDTO getAll(ListingSearchRequestDTO searchCriteriaDTO);
+    ListingListResponseDTO getAll(ListingListRequestDTO searchCriteriaDTO);
 
     Optional<Listing> getById(Long id);
 
@@ -22,8 +20,8 @@ public interface ListingService {
 
     void setStatus(Long id, String status, String sellerId);
 
-    ListingSearchResponseDTO getActiveListings(ListingSearchRequestDTO searchCriteriaDTO);
+    ListingListResponseDTO getActiveListings(ListingListRequestDTO searchCriteriaDTO);
 
-    ListingSearchResponseDTO getSellerListings(String sellerId, ListingSearchRequestDTO searchCriteriaDTO);
+    ListingListResponseDTO getSellerListings(String sellerId, ListingListRequestDTO searchCriteriaDTO);
 
 }

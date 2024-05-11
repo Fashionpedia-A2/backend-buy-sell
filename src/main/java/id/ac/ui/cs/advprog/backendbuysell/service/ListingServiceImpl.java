@@ -1,7 +1,7 @@
 package id.ac.ui.cs.advprog.backendbuysell.service;
 
-import id.ac.ui.cs.advprog.backendbuysell.dto.ListingSearchRequestDTO;
-import id.ac.ui.cs.advprog.backendbuysell.dto.ListingSearchResponseDTO;
+import id.ac.ui.cs.advprog.backendbuysell.dto.ListingListRequestDTO;
+import id.ac.ui.cs.advprog.backendbuysell.dto.ListingListResponseDTO;
 import id.ac.ui.cs.advprog.backendbuysell.enums.ListingStatus;
 import id.ac.ui.cs.advprog.backendbuysell.exception.FieldValidationException;
 import id.ac.ui.cs.advprog.backendbuysell.exception.ForbiddenException;
@@ -12,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
-import org.springframework.validation.Errors;
 import org.springframework.validation.Errors;
 
 import java.util.ArrayList;
@@ -35,10 +34,10 @@ public class ListingServiceImpl implements ListingService {
         return listingRepository.save(listing);
     }
 
-    public ListingSearchResponseDTO getAll(ListingSearchRequestDTO request) {
+    public ListingListResponseDTO getAll(ListingListRequestDTO request) {
         Specification<Listing> specification = ListingSearchQueryBuilder.buildSpecification(request);
         Page<Listing> page = listingRepository.findAll(specification, request.getPageable());
-        return ListingSearchResponseDTO
+        return ListingListResponseDTO
                 .builder()
                 .listings(page.getContent())
                 .currentPage(page.getNumber())
@@ -81,14 +80,14 @@ public class ListingServiceImpl implements ListingService {
         return listing;
     }
 
-    public ListingSearchResponseDTO getActiveListings(ListingSearchRequestDTO requestDTO) {
+    public ListingListResponseDTO getActiveListings(ListingListRequestDTO requestDTO) {
         List<String> status = new ArrayList<>();
         status.add(ListingStatus.VERIFIED.getValue());
         requestDTO.setStatuses(status);
         return this.getAll(requestDTO);
     }
 
-    public ListingSearchResponseDTO getSellerListings(String sellerId, ListingSearchRequestDTO requestDTO) {
+    public ListingListResponseDTO getSellerListings(String sellerId, ListingListRequestDTO requestDTO) {
         requestDTO.setSellerId(sellerId);
         return this.getAll(requestDTO);
     }

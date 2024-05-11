@@ -1,6 +1,6 @@
 package id.ac.ui.cs.advprog.backendbuysell.service;
 
-import id.ac.ui.cs.advprog.backendbuysell.dto.ListingSearchRequestDTO;
+import id.ac.ui.cs.advprog.backendbuysell.dto.ListingListRequestDTO;
 import id.ac.ui.cs.advprog.backendbuysell.enums.ListingCondition;
 import id.ac.ui.cs.advprog.backendbuysell.enums.ListingStatus;
 import id.ac.ui.cs.advprog.backendbuysell.exception.FieldValidationException;
@@ -13,7 +13,6 @@ import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -36,7 +35,7 @@ public class ListingServiceImplTest {
 
     List<Listing> listings;
     String sellerId;
-    ListingSearchRequestDTO searchCriteriaDTO = ListingSearchRequestDTO.builder().pageable(PageRequest.of(0, 20)).build();
+    ListingListRequestDTO searchCriteriaDTO = ListingListRequestDTO.builder().pageable(PageRequest.of(0, 20)).build();
 
     @BeforeEach
     public void setUp() {

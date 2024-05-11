@@ -1,16 +1,15 @@
 package id.ac.ui.cs.advprog.backendbuysell.utils;
 
-import id.ac.ui.cs.advprog.backendbuysell.dto.ListingSearchRequestDTO;
+import id.ac.ui.cs.advprog.backendbuysell.dto.ListingListRequestDTO;
 import id.ac.ui.cs.advprog.backendbuysell.model.Listing;
 import jakarta.persistence.criteria.Predicate;
-import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class ListingSearchQueryBuilder {
-    public static Specification<Listing> buildSpecification(ListingSearchRequestDTO searchCriteria) {
+    public static Specification<Listing> buildSpecification(ListingListRequestDTO searchCriteria) {
         return (root, query, builder) -> {
             List<Predicate> predicates = new ArrayList<>();
 
