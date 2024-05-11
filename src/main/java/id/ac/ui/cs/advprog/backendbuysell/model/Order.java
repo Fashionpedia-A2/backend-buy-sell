@@ -31,6 +31,10 @@ public class Order {
     private Long id;
 
     @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "created_at", nullable = false, updatable = false)
+    private Date createdAt;
+
+    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "updated_at", insertable = false, updatable = false)
     private Date updatedAt;
 
@@ -57,6 +61,18 @@ public class Order {
 
     @Column(name = "payment_id")
     private Long paymentId;
+
+
+    @PrePersist
+    protected void onCreate() {
+        createdAt = new Date();
+        updatedAt = createdAt;
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        updatedAt = new Date();
+    }
 
     public void setStatus(String status) {
         this.status = (status != null) ? status.toUpperCase() : null;
