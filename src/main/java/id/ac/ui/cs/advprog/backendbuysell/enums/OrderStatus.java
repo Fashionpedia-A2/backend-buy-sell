@@ -7,4 +7,8 @@ public enum OrderStatus {
     DIKIRIM,
     SELESAI,
     DIBATALKAN;
+
+    public static OrderStatus fromString(String order){
+        return valueOf(order.toUpperCase());
+    }
 }
