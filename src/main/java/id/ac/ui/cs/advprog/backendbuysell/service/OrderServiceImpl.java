@@ -4,6 +4,8 @@ import id.ac.ui.cs.advprog.backendbuysell.dto.OrderListRequestDTO;
 import id.ac.ui.cs.advprog.backendbuysell.dto.OrderListResponseDTO;
 import id.ac.ui.cs.advprog.backendbuysell.model.Order;
 
+import java.util.Optional;
+
 public class OrderServiceImpl implements OrderService {
     public Order create(Order order) {
         return null;
@@ -13,8 +15,8 @@ public class OrderServiceImpl implements OrderService {
         return null;
     }
 
-    public Order getById(Long id) {
-        return null;
+    public Optional<Order> getById(Long id) {
+        return Optional.empty();
     }
 
     public OrderListRequestDTO getAllSellerOrders(String sellerId, OrderListRequestDTO requestDTO) {
