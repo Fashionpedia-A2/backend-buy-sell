@@ -2,6 +2,7 @@ package id.ac.ui.cs.advprog.backendbuysell.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonSetter;
 import id.ac.ui.cs.advprog.backendbuysell.enums.OrderStatus;
 import jakarta.persistence.*;
 import jakarta.validation.ConstraintViolation;
@@ -15,6 +16,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.Errors;
 import org.springframework.validation.FieldError;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -32,10 +34,8 @@ public class Order {
     @Column(name = "updated_at", insertable = false, updatable = false)
     private Date updatedAt;
 
-    @Enumerated(EnumType.STRING)
-    @JsonFormat(shape = JsonFormat.Shape.STRING)
     @Column(name = "status", nullable = false)
-    private OrderStatus status = OrderStatus.MENUNGGU_PEMBAYARAN;
+    private String status = OrderStatus.MENUNGGU_PEMBAYARAN.name();
 
     @Column(name = "totalPrice", nullable = false)
     private Long totalPrice;
@@ -43,7 +43,7 @@ public class Order {
     @JsonProperty("listings")
     @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL)
     @JoinColumn(name = "order_id", nullable = false)
-    private List<ListingInOrder> listingInOrders;
+    private List<ListingInOrder> listingInOrders = new ArrayList<>();
 
     @Column(name = "seller_id", nullable = false)
     private String sellerId;
@@ -54,9 +54,6 @@ public class Order {
     @Column(name = "payment_id")
     private Long paymentId;
 
-
-    public void setStatus(String status) {
-    }
 
     public void calculateTotalPrice() {
     }
