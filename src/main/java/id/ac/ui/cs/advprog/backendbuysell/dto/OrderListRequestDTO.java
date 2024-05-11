@@ -1,9 +1,16 @@
 package id.ac.ui.cs.advprog.backendbuysell.dto;
 
-import java.awt.print.Pageable;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
+import org.springframework.data.domain.Pageable;
+
 import java.util.Date;
 import java.util.List;
 
+@Setter
+@Getter
+@Builder
 public class OrderListRequestDTO {
     private List<String> statuses;
     private String sellerId;
