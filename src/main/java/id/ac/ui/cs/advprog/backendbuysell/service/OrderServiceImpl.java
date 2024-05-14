@@ -47,17 +47,17 @@ public class OrderServiceImpl implements OrderService {
         return orderRepository.findById(id);
     }
 
-    public OrderListResponseDTO getAllSellerOrders(String sellerId, OrderListRequestDTO requestDTO) {
+    public OrderListResponseDTO getAllSellerOrders(Long sellerId, OrderListRequestDTO requestDTO) {
         requestDTO.setSellerId(sellerId);
         return this.getAll(requestDTO);
     }
 
-    public OrderListResponseDTO getAllBuyerOrders(String buyerId, OrderListRequestDTO requestDTO) {
+    public OrderListResponseDTO getAllBuyerOrders(Long buyerId, OrderListRequestDTO requestDTO) {
         requestDTO.setBuyerId(buyerId);
         return this.getAll(requestDTO);
     }
 
-    public Order updateOrderStatus(Long id, String status, String sellerId) {
+    public Order updateOrderStatus(Long id, String status, Long sellerId) {
         Order order = orderRepository.findById(id).orElseThrow();
         if (!isAuthenticated(order, sellerId)) {
             throw new ForbiddenException("User is not authorized to perform action on this order");
@@ -70,8 +70,8 @@ public class OrderServiceImpl implements OrderService {
         return orderRepository.save(order);
     }
 
-    private boolean isAuthenticated(Order order, String sellerId) {
-        return order.getSellerId().equals(sellerId);
+    private boolean isAuthenticated(Order order, Long sellerId) {
+        return order.getSeller().getId().equals(sellerId);
     }
 
 }

@@ -11,8 +11,8 @@ import java.util.List;
 
 @Repository
 public interface ListingRepository extends JpaRepository<Listing, Long>, JpaSpecificationExecutor<Listing> {
-    @Query("SELECT L FROM Listing L WHERE L.sellerId = :sellerId")
-    List<Listing> findAllBySellerId(@Param("sellerId") String sellerId);
+    @Query("SELECT L FROM Listing L WHERE L.seller.id = :sellerId")
+    List<Listing> findAllBySellerId(@Param("sellerId") Long sellerId);
 
     @Query("SELECT L FROM Listing L WHERE L.name ILIKE %:name%")
     List<Listing> findAllByName(@Param("name") String name);

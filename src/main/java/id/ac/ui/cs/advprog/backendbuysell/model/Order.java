@@ -40,11 +40,11 @@ public class Order {
     @Column(name = "updated_at", insertable = false, updatable = false)
     private Date updatedAt;
 
-    @NotNull
+    @NotNull(message = "Status must not be empty")
     @Column(name = "status", nullable = false)
     private String status = OrderStatus.MENUNGGU_PEMBAYARAN.name();
 
-    @NotNull
+    @NotNull(message = "Total price must not be empty")
     @JsonProperty("total_price")
     @Column(name = "totalPrice", nullable = false)
     private Long totalPrice;
@@ -54,15 +54,15 @@ public class Order {
     @JoinColumn(name = "order_id", nullable = false)
     private List<ListingInOrder> listingInOrders = new ArrayList<>();
 
-    @NotNull
-    @JsonProperty("seller_id")
-    @Column(name = "seller_id", nullable = false)
-    private String sellerId;
+    @NotNull(message = "Seller must not be empty")
+    @ManyToOne
+    @JoinColumn(name = "seller_id")
+    private Seller seller;
 
-    @NotNull
+    @NotNull(message = "Buyer must not be empty")
     @JsonProperty("buyer_id")
     @Column(name = "buyer_id", nullable = false)
-    private String buyerId;
+    private Long buyerId;
 
     @JsonProperty("payment_id")
     @Column(name = "payment_id")

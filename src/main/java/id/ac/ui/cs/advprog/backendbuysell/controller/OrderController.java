@@ -73,7 +73,7 @@ public class OrderController {
             OrderListRequestDTO request,
             @PageableDefault(page = 0, size = 40) @SortDefault(sort = "createdAt", direction = Sort.Direction.ASC) Pageable pageable,
             @RequestHeader("Authorization") String token) {
-        String buyerId = JwtHelper.getUserIdFromToken(token);
+        Long buyerId = JwtHelper.getUserIdFromToken(token);
         request.setPageable(pageable);
         OrderListResponseDTO result = orderService.getAllBuyerOrders(buyerId, request);
         ApiResponse<OrderListResponseDTO> response = ApiResponse.success(result);
@@ -85,7 +85,7 @@ public class OrderController {
             @PathVariable Long id, @RequestHeader("Authorization") String token, @RequestBody String status) {
         ApiResponse<Order> response;
         try {
-            String sellerId = JwtHelper.getUserIdFromToken(token);
+            Long sellerId = JwtHelper.getUserIdFromToken(token);
             Order result = orderService.updateOrderStatus(id, status, sellerId);
             response = ApiResponse.success(result, "Order status successfully created.");
             return ResponseEntity.ok(response);

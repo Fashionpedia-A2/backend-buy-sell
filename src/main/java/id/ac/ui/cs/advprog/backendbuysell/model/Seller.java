@@ -12,9 +12,10 @@ import java.util.List;
 @Table(name="seller")
 @Getter
 public class Seller {
+    @Setter
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 
     @Setter
     @Column(name="name")

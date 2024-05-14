@@ -11,7 +11,7 @@ public interface OrderService {
     Order create(Order order);
     OrderListResponseDTO getAll(OrderListRequestDTO requestDTO);
     Optional<Order> getById(Long id);
-    OrderListResponseDTO getAllSellerOrders(String sellerId, OrderListRequestDTO requestDTO);
-    OrderListResponseDTO getAllBuyerOrders(String buyerId, OrderListRequestDTO requestDTO);
-    Order updateOrderStatus(Long id, String status, String sellerId);
+    OrderListResponseDTO getAllSellerOrders(Long sellerId, OrderListRequestDTO requestDTO);
+    OrderListResponseDTO getAllBuyerOrders(Long buyerId, OrderListRequestDTO requestDTO);
+    Order updateOrderStatus(Long id, String status, Long sellerId);
 }

@@ -13,8 +13,8 @@ import java.util.List;
 @Builder
 public class OrderListRequestDTO {
     private List<String> statuses;
-    private String sellerId;
-    private String buyerId;
+    private Long sellerId;
+    private Long buyerId;
     private Long paymentId;
     private Date createdAtStart;
     private Date createdAtEnd;

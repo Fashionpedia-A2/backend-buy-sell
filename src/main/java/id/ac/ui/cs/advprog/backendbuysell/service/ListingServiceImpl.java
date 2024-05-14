@@ -25,8 +25,11 @@ public class ListingServiceImpl implements ListingService {
     @Autowired
     ListingRepository listingRepository;
 
-    public Listing create(Listing listing, String sellerId) {
-        listing.setSellerId(sellerId);
+    @Autowired
+    SellerService sellerService;
+
+    public Listing create(Listing listing, Long sellerId) {
+        listing.setSeller(sellerService.findById(sellerId));
         Errors validationResult = listing.validate();
         if (validationResult.hasErrors()) {
             throw new FieldValidationException(validationResult.getAllErrors(), "Validation Error");
@@ -50,7 +53,7 @@ public class ListingServiceImpl implements ListingService {
         return listingRepository.findById(id);
     }
 
-    public Listing update(Long id, Listing updatedListing, String sellerId) {
+    public Listing update(Long id, Listing updatedListing, Long sellerId) {
         Optional<Listing> oldResult = listingRepository.findById(id);
         if (oldResult.isEmpty()) {
             throw new NoSuchElementException();
@@ -58,7 +61,7 @@ public class ListingServiceImpl implements ListingService {
         if (!isAuthenticated(oldResult.get(), sellerId)) {
             throw new ForbiddenException("User is not authorized to perform action on this listing");
         }
-        updatedListing.setSellerId(sellerId);
+        updatedListing.setSeller(sellerService.findById(sellerId));
         Errors validationResult = updatedListing.validate();
         if (validationResult.hasErrors()) {
             throw new FieldValidationException(validationResult.getAllErrors(), "Validation Error");
@@ -67,7 +70,7 @@ public class ListingServiceImpl implements ListingService {
         return listingRepository.save(updatedListing);
     }
 
-    public Listing delete(Long id, String sellerId) {
+    public Listing delete(Long id, Long sellerId) {
         Listing listing = listingRepository.findById(id).orElseThrow();
         if (!isAuthenticated(listing, sellerId)) {
             throw new ForbiddenException("User is not authorized to perform action on this listing");
@@ -87,12 +90,12 @@ public class ListingServiceImpl implements ListingService {
         return this.getAll(requestDTO);
     }
 
-    public ListingListResponseDTO getSellerListings(String sellerId, ListingListRequestDTO requestDTO) {
+    public ListingListResponseDTO getSellerListings(Long sellerId, ListingListRequestDTO requestDTO) {
         requestDTO.setSellerId(sellerId);
         return this.getAll(requestDTO);
     }
 
-    public void setStatus(Long id, String status, String sellerId) {
+    public void setStatus(Long id, String status, Long sellerId) {
         Listing listing = listingRepository.findById(id).orElseThrow();
         if (!isAuthenticated(listing, sellerId)) {
             throw new ForbiddenException("User is not authorized to perform action on this listing");
@@ -105,7 +108,7 @@ public class ListingServiceImpl implements ListingService {
         listingRepository.save(listing);
     }
 
-    private boolean isAuthenticated(Listing listing, String sellerId) {
-        return listing.getSellerId().equals(sellerId);
+    private boolean isAuthenticated(Listing listing, Long sellerId) {
+        return listing.getSeller().getId().equals(sellerId);
     }
 }

@@ -8,20 +8,20 @@ import id.ac.ui.cs.advprog.backendbuysell.model.Listing;
 import java.util.Optional;
 
 public interface ListingService {
-    Listing create(Listing listing, String sellerId);
+    Listing create(Listing listing, Long sellerId);
 
     ListingListResponseDTO getAll(ListingListRequestDTO searchCriteriaDTO);
 
     Optional<Listing> getById(Long id);
 
-    Listing update(Long id, Listing updatedListing, String sellerId);
+    Listing update(Long id, Listing updatedListing, Long sellerId);
 
-    Listing delete(Long id, String sellerId);
+    Listing delete(Long id, Long sellerId);
 
-    void setStatus(Long id, String status, String sellerId);
+    void setStatus(Long id, String status, Long sellerId);
 
     ListingListResponseDTO getActiveListings(ListingListRequestDTO searchCriteriaDTO);
 
-    ListingListResponseDTO getSellerListings(String sellerId, ListingListRequestDTO searchCriteriaDTO);
+    ListingListResponseDTO getSellerListings(Long sellerId, ListingListRequestDTO searchCriteriaDTO);
 
 }
