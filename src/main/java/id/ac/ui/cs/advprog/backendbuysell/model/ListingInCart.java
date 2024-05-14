@@ -6,25 +6,28 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.io.Serializable;
+
 @Entity
 @Table(name="listing_in_cart")
+@Setter
 @Getter
+@IdClass(ListingInCartId.class)
 public class ListingInCart {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+//    @Id
+//    @GeneratedValue(strategy = GenerationType.IDENTITY)
+//    private long id;
 
-    @Setter
+    @Id
     @ManyToOne
     @JoinColumn(name = "listing_id", referencedColumnName = "id")
     private Listing listing;
 
-    @Setter
+    @Id
     @ManyToOne
     @JoinColumn(name = "cart_id", referencedColumnName = "id")
     private Cart cart;
 
-    @Setter
     @Column(name = "quantity", nullable = false)
     private int quantity;
 
@@ -38,3 +41,4 @@ public class ListingInCart {
         }
     }
 }
+

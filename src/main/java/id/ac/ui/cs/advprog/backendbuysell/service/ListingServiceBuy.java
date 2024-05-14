@@ -7,6 +7,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ListingServiceBuy {
@@ -41,5 +42,9 @@ public class ListingServiceBuy {
 
     public void delete(Long id){
         listingRepository.deleteById(id);
+    }
+
+    public Optional<Listing> findById(Long id){
+        return listingRepository.findById(id);
     }
 }

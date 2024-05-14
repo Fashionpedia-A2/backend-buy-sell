@@ -20,6 +20,9 @@ public class ListingDetailsDto {
     private String size;
     private String condition;
     private SellerDetailsDto sellerDetailsDto;
+    private String status;
+    private String category;
+    private String description;
 
 
     public ListingDetailsDto(Listing listing){
@@ -30,5 +33,8 @@ public class ListingDetailsDto {
         this.size = listing.getSize();
         this.condition = listing.getCondition();
         this.sellerDetailsDto = new SellerDetailsDto(listing.getSeller());
+        this.status = listing.getStatus();
+        this.category = listing.getCategory();
+        this.description = listing.getCategory();
     }
 }

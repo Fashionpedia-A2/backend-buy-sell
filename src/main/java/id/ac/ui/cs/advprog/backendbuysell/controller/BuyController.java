@@ -1,24 +1,34 @@
 package id.ac.ui.cs.advprog.backendbuysell.controller;
 
 import id.ac.ui.cs.advprog.backendbuysell.auth.model.User;
+import id.ac.ui.cs.advprog.backendbuysell.auth.repository.UserRepository;
 import id.ac.ui.cs.advprog.backendbuysell.auth.service.JwtService;
+import id.ac.ui.cs.advprog.backendbuysell.builder.ListingInCartBuilder;
+import id.ac.ui.cs.advprog.backendbuysell.dto.CreateListingRequestDTO;
 import id.ac.ui.cs.advprog.backendbuysell.dto.ListingDetailsDto;
 import id.ac.ui.cs.advprog.backendbuysell.dto.SellerDetailsDto;
+import id.ac.ui.cs.advprog.backendbuysell.model.Cart;
 import id.ac.ui.cs.advprog.backendbuysell.model.Listing;
+import id.ac.ui.cs.advprog.backendbuysell.model.ListingInCart;
 import id.ac.ui.cs.advprog.backendbuysell.model.Seller;
+import id.ac.ui.cs.advprog.backendbuysell.service.CartService;
 import id.ac.ui.cs.advprog.backendbuysell.service.ListingServiceBuy;
 import id.ac.ui.cs.advprog.backendbuysell.service.SellerService;
+import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/buyer")
+@EnableWebMvc
 public class BuyController {
 
     @Autowired
@@ -29,6 +39,12 @@ public class BuyController {
 
     @Autowired
     private SellerService sellerService;
+
+    @Autowired
+    private CartService cartService;
+
+    @Autowired
+    private UserRepository userRepository;
 
 
     @GetMapping("/protected")
@@ -72,6 +88,30 @@ public class BuyController {
             return ResponseEntity.internalServerError().build();
         }
     }
+
+    @PostMapping("cart/create")
+    public ResponseEntity<String> createListing(@RequestBody CreateListingRequestDTO data) {
+        System.out.print(data.toString());
+        // get user
+        Optional<User> user = userRepository.findById(data.getUserId());
+        if (user.isEmpty()) return ResponseEntity.badRequest().body("User with that ID not found");
+        Cart cart = cartService.findByUser(user.get());
+
+        // get listing
+        Optional<Listing> getListing = listingServiceBuy.findById(data.getListingId());
+        if (getListing.isEmpty()) return ResponseEntity.badRequest().body("Listing with that ID not found");
+        Listing listing = getListing.get();
+
+        // create listingInCart
+        ListingInCart listingInCart = new ListingInCartBuilder().setCart(cart).setListing(listing).setQuantity(1).build();
+        cartService.saveListingInCart(listingInCart);
+
+        return ResponseEntity.ok("OK");
+    }
+
+
+
+
 
     @PostMapping("/listing/create")
     public ResponseEntity<Object> create(@RequestBody Listing listing) {
