@@ -6,7 +6,7 @@ import id.ac.ui.cs.advprog.backendbuysell.dto.ListingDetailsDto;
 import id.ac.ui.cs.advprog.backendbuysell.dto.SellerDetailsDto;
 import id.ac.ui.cs.advprog.backendbuysell.model.Listing;
 import id.ac.ui.cs.advprog.backendbuysell.model.Seller;
-import id.ac.ui.cs.advprog.backendbuysell.service.ListingService;
+import id.ac.ui.cs.advprog.backendbuysell.service.ListingServiceBuy;
 import id.ac.ui.cs.advprog.backendbuysell.service.SellerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -25,7 +25,7 @@ public class BuyController {
     private JwtService jwtService;
 
     @Autowired
-    private ListingService listingService;
+    private ListingServiceBuy listingServiceBuy;
 
     @Autowired
     private SellerService sellerService;
@@ -51,7 +51,7 @@ public class BuyController {
 
     @GetMapping("/listing")
     public ResponseEntity<List<ListingDetailsDto>> getAllListing() {
-        List<Listing> list = listingService.findAll();
+        List<Listing> list = listingServiceBuy.findAll();
         List<ListingDetailsDto> listingDetailsDtoList = new LinkedList<ListingDetailsDto>();
         for(int i = 0; i < list.size(); i++){
             listingDetailsDtoList.add(new ListingDetailsDto(list.get(i)));
@@ -76,7 +76,7 @@ public class BuyController {
     @PostMapping("/listing/create")
     public ResponseEntity<Object> create(@RequestBody Listing listing) {
         //listingService.create(new Listing("hoho", "url", 12, 123123L, "besar", "baru lah"));
-        Listing l = listingService.create(listing);
+        Listing l = listingServiceBuy.create(listing);
 
         if (l == null) {
             return new ResponseEntity<>("tidak boleh ada atribut yang null", HttpStatus.BAD_REQUEST);
@@ -87,7 +87,7 @@ public class BuyController {
 
     @PostMapping("/listing/save")
     public ResponseEntity<Object> save(@RequestBody Listing listing) {
-        Listing out = listingService.save(listing);
+        Listing out = listingServiceBuy.save(listing);
         if (out == null) {
             return new ResponseEntity<>("ada masalah, sepertinya karena ada atribut yang null atau mungkin tidak ada listing dengan id " + listing.getId(), HttpStatus.BAD_REQUEST);
         }
@@ -96,7 +96,7 @@ public class BuyController {
 
     @DeleteMapping("/listing/{id}")
     public ResponseEntity<String> delete(@PathVariable Long id) {
-        listingService.delete(id);
+        listingServiceBuy.delete(id);
         return ResponseEntity.ok("successfuly deleted");
     }
 
