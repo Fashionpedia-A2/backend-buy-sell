@@ -30,10 +30,12 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @JsonProperty("created_at")
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "created_at", nullable = false, updatable = false)
     private Date createdAt;
 
+    @JsonProperty("updated_at")
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "updated_at", insertable = false, updatable = false)
     private Date updatedAt;
@@ -43,6 +45,7 @@ public class Order {
     private String status = OrderStatus.MENUNGGU_PEMBAYARAN.name();
 
     @NotNull
+    @JsonProperty("total_price")
     @Column(name = "totalPrice", nullable = false)
     private Long totalPrice;
 
@@ -52,13 +55,16 @@ public class Order {
     private List<ListingInOrder> listingInOrders = new ArrayList<>();
 
     @NotNull
+    @JsonProperty("seller_id")
     @Column(name = "seller_id", nullable = false)
     private String sellerId;
 
     @NotNull
+    @JsonProperty("buyer_id")
     @Column(name = "buyer_id", nullable = false)
     private String buyerId;
 
+    @JsonProperty("payment_id")
     @Column(name = "payment_id")
     private Long paymentId;
 
