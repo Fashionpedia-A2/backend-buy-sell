@@ -26,6 +26,7 @@ public class ListingDetailsDto {
 
 
     public ListingDetailsDto(Listing listing){
+        this.id = id;
         this.name = listing.getName();
         this.imageUrl = listing.getImageUrl();
         this.stock = listing.getStock();

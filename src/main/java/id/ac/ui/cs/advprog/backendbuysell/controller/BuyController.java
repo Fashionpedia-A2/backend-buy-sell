@@ -112,25 +112,17 @@ public class BuyController {
         return ResponseEntity.ok("OK");
     }
 
-    //@PostMapping("cart")
-    //public ResponseEntity<String> getListingInCart(@RequestBody CreateListingRequestDTO data) {
-//        System.out.print(data.toString());
-//        // get user
-//        Optional<User> user = userRepository.findById(data.getUserId());
-//        if (user.isEmpty()) return ResponseEntity.badRequest().body("User with that ID not found");
-//        Cart cart = cartService.findByUser(user.get());
-//
-//        // get listing
-//        Optional<Listing> getListing = listingServiceBuy.findById(data.getListingId());
-//        if (getListing.isEmpty()) return ResponseEntity.badRequest().body("Listing with that ID not found");
-//        Listing listing = getListing.get();
-//
-//        // create listingInCart
-//        ListingInCart listingInCart = new ListingInCartBuilder().setCart(cart).setListing(listing).setQuantity(1).build();
-//        cartService.saveListingInCart(listingInCart);
-//
-//        return ResponseEntity.ok("OK");
-    //}
+    @GetMapping("/cart")
+    public ResponseEntity<List<ListingDetailsDto>> getListingInCart(HttpServletRequest request) {
+        // get user
+        User user = authorizeToken(request);
+        //Cart cart = cartService.findByUser(user);
+
+        List<ListingDetailsDto> lic = cartService.findListingsInCartByUser(user);
+        return ResponseEntity.ok(lic);
+    }
+
+
 
 
 
