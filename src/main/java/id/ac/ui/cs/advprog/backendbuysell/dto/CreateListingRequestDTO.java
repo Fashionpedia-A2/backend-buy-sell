@@ -6,6 +6,5 @@ import lombok.Setter;
 @Getter
 @Setter
 public class CreateListingRequestDTO {
-    private int userId;
     private Long listingId;
 }
