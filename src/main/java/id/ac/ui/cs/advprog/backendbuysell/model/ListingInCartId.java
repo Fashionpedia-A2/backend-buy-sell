@@ -9,7 +9,4 @@ public class ListingInCartId implements Serializable {
 
     private Listing listing;
     private Cart cart;
-    private int quantity;
-
-    // standard getters and setters
 }

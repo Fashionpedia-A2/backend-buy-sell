@@ -6,11 +6,9 @@ import id.ac.ui.cs.advprog.backendbuysell.auth.service.JwtService;
 import id.ac.ui.cs.advprog.backendbuysell.builder.ListingInCartBuilder;
 import id.ac.ui.cs.advprog.backendbuysell.dto.CreateListingRequestDTO;
 import id.ac.ui.cs.advprog.backendbuysell.dto.ListingDetailsDto;
+import id.ac.ui.cs.advprog.backendbuysell.dto.ListingInCartDetailsDto;
 import id.ac.ui.cs.advprog.backendbuysell.dto.SellerDetailsDto;
-import id.ac.ui.cs.advprog.backendbuysell.model.Cart;
-import id.ac.ui.cs.advprog.backendbuysell.model.Listing;
-import id.ac.ui.cs.advprog.backendbuysell.model.ListingInCart;
-import id.ac.ui.cs.advprog.backendbuysell.model.Seller;
+import id.ac.ui.cs.advprog.backendbuysell.model.*;
 import id.ac.ui.cs.advprog.backendbuysell.service.CartService;
 import id.ac.ui.cs.advprog.backendbuysell.service.ListingServiceBuy;
 import id.ac.ui.cs.advprog.backendbuysell.service.SellerService;
@@ -93,9 +91,32 @@ public class BuyController {
         }
     }
 
-    // memasukkan listing ke dalam cart
-    @PostMapping("cart/create")
+    @PostMapping("cart/create")  // memasukkan listing ke dalam cart
     public ResponseEntity<String> createListingInCart(@RequestBody CreateListingRequestDTO data, HttpServletRequest request) {
+        return setListingInCartQuantity(request, data, 1);
+    }
+    @PostMapping("cart/update")
+    public ResponseEntity<String> updateListingInCartQuantity(@RequestBody CreateListingRequestDTO data, HttpServletRequest request) {
+        return setListingInCartQuantity(request, data, data.getQuantity());
+    }
+
+    @GetMapping("/cart")       // dapetin semua listingincart based on user
+    public ResponseEntity<List<ListingInCartDetailsDto>> getListingInCart(HttpServletRequest request) {
+        // get user
+        User user = authorizeToken(request);
+
+        List<ListingInCartDetailsDto> lic = cartService.findListingsInCartByUser(user);
+        return ResponseEntity.ok(lic);
+    }
+    @PostMapping("/cart/checkout")
+    public ResponseEntity<String> checkoutCart(HttpServletRequest request){
+        User user = authorizeToken(request);
+        cartService.checkout(user);
+        return ResponseEntity.ok("OK");
+    }
+
+
+    private ResponseEntity<String> setListingInCartQuantity(HttpServletRequest request, CreateListingRequestDTO data, int quantity){
         // get user
         User user = authorizeToken(request);
         Cart cart = cartService.findByUser(user);
@@ -106,20 +127,10 @@ public class BuyController {
         Listing listing = getListing.get();
 
         // create listingInCart
-        ListingInCart listingInCart = new ListingInCartBuilder().setCart(cart).setListing(listing).setQuantity(1).build();
+        ListingInCart listingInCart = new ListingInCartBuilder().setCart(cart).setListing(listing).setQuantity(quantity).build();
         cartService.saveListingInCart(listingInCart);
 
         return ResponseEntity.ok("OK");
-    }
-
-    @GetMapping("/cart")
-    public ResponseEntity<List<ListingDetailsDto>> getListingInCart(HttpServletRequest request) {
-        // get user
-        User user = authorizeToken(request);
-        //Cart cart = cartService.findByUser(user);
-
-        List<ListingDetailsDto> lic = cartService.findListingsInCartByUser(user);
-        return ResponseEntity.ok(lic);
     }
 
 
