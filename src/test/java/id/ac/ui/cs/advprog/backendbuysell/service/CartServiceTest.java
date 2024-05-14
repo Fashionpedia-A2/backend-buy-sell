@@ -44,11 +44,10 @@ public class CartServiceTest {
         when(cartRepositoryMock.findByUser(user)).thenReturn(optionalCart);
 
         // Call the service method
-        Optional<Cart> actualCart = cartService.findByUser(user);
+        Cart actualCart = cartService.findByUser(user);
 
         // Assert results
         assertNotNull(actualCart);
-        assertTrue(actualCart.isPresent());
-        assertEquals(expectedCart, actualCart.get());
+        assertEquals(expectedCart, actualCart);
     }
 }
