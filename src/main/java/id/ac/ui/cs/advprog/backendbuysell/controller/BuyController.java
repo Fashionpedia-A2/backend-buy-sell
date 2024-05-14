@@ -1,9 +1,6 @@
 package id.ac.ui.cs.advprog.backendbuysell.controller;
 
-import id.ac.ui.cs.advprog.backendbuysell.auth.dto.UserProfileResponse;
 import id.ac.ui.cs.advprog.backendbuysell.auth.model.User;
-import id.ac.ui.cs.advprog.backendbuysell.auth.model.UserProfile;
-import id.ac.ui.cs.advprog.backendbuysell.auth.repository.UserProfileRepository;
 import id.ac.ui.cs.advprog.backendbuysell.auth.service.JwtService;
 import id.ac.ui.cs.advprog.backendbuysell.dto.ListingDetailsDto;
 import id.ac.ui.cs.advprog.backendbuysell.dto.SellerDetailsDto;
@@ -14,19 +11,15 @@ import id.ac.ui.cs.advprog.backendbuysell.service.SellerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import jakarta.servlet.http.HttpServletRequest;
-import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/buyer")
-@EnableWebMvc
-public class BuySellController {
+public class BuyController {
 
     @Autowired
     private JwtService jwtService;
@@ -68,13 +61,16 @@ public class BuySellController {
 
     @GetMapping("/seller/{sellerId}")
     public ResponseEntity<SellerDetailsDto> getSellerDetails(@PathVariable Long sellerId) {
-        Seller seller = sellerService.findById(sellerId);
-        if (seller == null) {
-            return ResponseEntity.notFound().build();
+        try {
+            Seller seller = sellerService.findById(sellerId);
+            if (seller == null) {
+                throw new RuntimeException("Seller with ID " + sellerId + " not found");
+            }
+            return ResponseEntity.ok(new SellerDetailsDto(seller));
+        } catch (Exception e) {
+            // Handle other potential exceptions (e.g., database errors)
+            return ResponseEntity.internalServerError().build();
         }
-        SellerDetailsDto details = new SellerDetailsDto(seller);
-
-        return ResponseEntity.ok(details);
     }
 
     @PostMapping("/listing/create")
