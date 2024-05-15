@@ -53,7 +53,9 @@ dependencies {
     runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.11.5")
     implementation("javax.servlet:javax.servlet-api:4.0.1")
 
-
+    // monitoring purposes
+    implementation("org.springframework.boot:spring-boot-starter-actuator")
+    runtimeOnly("io.micrometer:micrometer-registry-prometheus")
 
 }
 
