@@ -30,7 +30,7 @@ name: SonarCloud analysis
 
 on:
   push:
-    branches: [ "main" , "staging", "fredo" ]
+    branches: [ "main" , "staging", "feat/fredo/buy" ]
   pull_request:
     branches: [ "main" ]
   workflow_dispatch:
