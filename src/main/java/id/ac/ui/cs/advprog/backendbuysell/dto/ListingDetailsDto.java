@@ -36,6 +36,6 @@ public class ListingDetailsDto {
         this.sellerDetailsDto = new SellerDetailsDto(listing.getSeller());
         this.status = listing.getStatus();
         this.category = listing.getCategory();
-        this.description = listing.getCategory();
+        this.description = listing.getDescription();
     }
 }

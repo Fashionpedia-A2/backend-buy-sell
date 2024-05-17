@@ -74,6 +74,20 @@ public class Listing {
     }
 
     @Builder
+    public Listing(String name, String imageUrl, int stock, Long price, String category, String size, String condition, Seller seller, String description){
+        this.name = name;
+        this.imageUrl = imageUrl;
+        this.stock = stock;
+        this.price = price;
+        this.size = size;
+        this.condition = condition;
+        this.seller = seller;
+        this.description = description;
+        this.category = category;
+        setStatus(ListingStatus.PENDING.getValue());
+    }
+
+    @Builder
     public Listing(String name, String imageUrl, int stock, Long price, String size, String condition, Seller seller, String description){
         this.name = name;
         this.imageUrl = imageUrl;
@@ -83,6 +97,7 @@ public class Listing {
         this.condition = condition;
         this.seller = seller;
         this.description = description;
+        this.category = category;
         setStatus(ListingStatus.PENDING.getValue());
     }
 
