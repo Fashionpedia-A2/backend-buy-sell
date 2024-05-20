@@ -10,9 +10,7 @@ public class ListingInOrderTest {
     Errors validationResult;
     @BeforeEach
     public void setUp(){
-        Seller seller = new Seller();
-        seller.setId(1L);
-        Listing listing = Listing.builder().name("Jeans Pria").seller(seller).stock(20).price(55_000L).build();
+        Listing listing = Listing.builder().name("Jeans Pria").sellerId(1L).stock(20).price(55_000L).build();
         this.listingInOrder = new ListingInOrder(listing, 2);
         this.listingInOrder.setOrderId(1L);
     }

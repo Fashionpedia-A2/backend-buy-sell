@@ -71,7 +71,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     private boolean isAuthenticated(Order order, Long sellerId) {
-        return order.getSeller().getId().equals(sellerId);
+        return order.getSellerId().equals(sellerId);
     }
 
 }

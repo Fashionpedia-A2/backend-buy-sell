@@ -12,16 +12,11 @@ public class ListingTest {
     Listing listing;
     Errors validationResult;
 
-    Seller seller;
-
     @BeforeEach
     void setup() {
-        seller = new Seller();
-        seller.setId(1L);
-        
         this.listing = new Listing();
         this.listing.setName("Baju Koko Shimmer");
-        this.listing.setSeller(seller);
+        this.listing.setSellerId(1L);
         this.listing.setStock(100);
         this.listing.setPrice(100_000L);
         this.listing.setCategory("Baju Muslim Pria");
@@ -35,7 +30,7 @@ public class ListingTest {
     void testMinimumRequiredField(){
         Listing listing = new Listing();
         listing.setName("Baju Koko Shimmer");
-        listing.setSeller(seller);
+        listing.setSellerId(1L);
         listing.setStock(100);
         listing.setPrice(100_000L);
         validationResult = listing.validate();
@@ -58,7 +53,7 @@ public class ListingTest {
 
     @Test
     void testNullSeller(){
-        listing.setSeller(null);
+        listing.setSellerId(null);
         validationResult = listing.validate();
         assertTrue(validationResult.hasErrors());
     }

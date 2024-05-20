@@ -29,7 +29,7 @@ public class ListingServiceImpl implements ListingService {
     SellerService sellerService;
 
     public Listing create(Listing listing, Long sellerId) {
-        listing.setSeller(sellerService.findById(sellerId));
+        listing.setSellerId(sellerId);
         Errors validationResult = listing.validate();
         if (validationResult.hasErrors()) {
             throw new FieldValidationException(validationResult.getAllErrors(), "Validation Error");
@@ -61,7 +61,7 @@ public class ListingServiceImpl implements ListingService {
         if (!isAuthenticated(oldResult.get(), sellerId)) {
             throw new ForbiddenException("User is not authorized to perform action on this listing");
         }
-        updatedListing.setSeller(sellerService.findById(sellerId));
+        updatedListing.setSellerId(sellerId);
         Errors validationResult = updatedListing.validate();
         if (validationResult.hasErrors()) {
             throw new FieldValidationException(validationResult.getAllErrors(), "Validation Error");
@@ -109,6 +109,6 @@ public class ListingServiceImpl implements ListingService {
     }
 
     private boolean isAuthenticated(Listing listing, Long sellerId) {
-        return listing.getSeller().getId().equals(sellerId);
+        return listing.getSellerId().equals(sellerId);
     }
 }

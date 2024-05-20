@@ -24,6 +24,8 @@ import java.util.Set;
 @Entity(name = "Order")
 @Table(name = "orders")
 @Getter
+@Setter
+
 public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -43,7 +45,6 @@ public class Order {
     @Column(name = "status", nullable = false)
     private String status = OrderStatus.MENUNGGU_PEMBAYARAN.name();
 
-    @Setter
     @NotNull(message = "Total price must not be empty")
     @JsonProperty("total_price")
     @Column(name = "totalPrice", nullable = false)
@@ -54,19 +55,15 @@ public class Order {
     @JoinColumn(name = "order_id", nullable = false)
     private List<ListingInOrder> listingInOrders = new ArrayList<>();
 
-    @Setter
-    @NotNull(message = "Seller must not be empty")
-    @ManyToOne
-    @JoinColumn(name = "seller_id")
-    private Seller seller;
+    @NotNull(message = "Seller_id must not be empty")
+    @Column(name = "seller_id", nullable = false)
+    private Long sellerId;
 
-    @Setter
     @NotNull(message = "Buyer must not be empty")
     @JsonProperty("buyer_id")
     @Column(name = "buyer_id", nullable = false)
     private Long buyerId;
 
-    @Setter
     @JsonProperty("payment_id")
     @Column(name = "payment_id")
     private Long paymentId;

@@ -7,6 +7,7 @@ import id.ac.ui.cs.advprog.backendbuysell.model.*;
 import id.ac.ui.cs.advprog.backendbuysell.repository.CartRepository;
 import id.ac.ui.cs.advprog.backendbuysell.repository.ListingInCartRepository;
 import id.ac.ui.cs.advprog.backendbuysell.repository.ListingRepository;
+import id.ac.ui.cs.advprog.backendbuysell.repository.SellerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,6 +23,9 @@ public class CartService {
 
     @Autowired
     private ListingRepository listingRepository;
+
+    @Autowired
+    private SellerService sellerService;
 
 
     public Cart findByUser(User user) {
@@ -49,7 +53,8 @@ public class CartService {
         List<ListingInCartDetailsDto> output = new ArrayList<ListingInCartDetailsDto>();
         for (ListingInCart lic : list){
             ListingInCartDetailsDto dto = new ListingInCartDetailsDto();
-            dto.setListing(new ListingDetailsDto(lic.getListing()));
+            Seller seller = sellerService.findById(lic.getListing().getSellerId());
+            dto.setListing(new ListingDetailsDto(lic.getListing(), seller));
             dto.setQuantity(lic.getQuantity());
             output.add(dto);
         }
@@ -63,14 +68,13 @@ public class CartService {
         for (ListingInCart lic: list){
             //listingInCartRepository.delete(lic);
             Listing listing = lic.getListing();
-            Seller seller = lic.getListing().getSeller();
+            Long sellerId = lic.getListing().getSellerId();
             int quantity = lic.getQuantity();
-            long sellerId = lic.getListing().getSeller().getId();
 
             Order order = sellerToOrderMap.get(sellerId);
             if (order == null){
                 order = new Order();
-                order.setSeller(seller);
+                order.setSellerId(sellerId);
                 order.setBuyerId(Long.valueOf(user.getId()));
                 sellerToOrderMap.put(sellerId, order);
             }
