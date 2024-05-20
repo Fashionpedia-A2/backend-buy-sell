@@ -25,7 +25,7 @@ public class JwtHelper {
         Claims claims = Jwts.parserBuilder().setSigningKey(Decoders.BASE64.decode(SECRET_KEY)) // Set your secret key here
                 .build().parseClaimsJws(token).getBody();
         try {
-            String username = (String) claims.get("username");
+            String username = (String) claims.get("user_id");
             return Long.parseLong(username);
         } catch (NumberFormatException e) {
             return null;
