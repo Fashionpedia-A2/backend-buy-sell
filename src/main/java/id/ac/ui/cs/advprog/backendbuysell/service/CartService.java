@@ -7,7 +7,6 @@ import id.ac.ui.cs.advprog.backendbuysell.model.*;
 import id.ac.ui.cs.advprog.backendbuysell.repository.CartRepository;
 import id.ac.ui.cs.advprog.backendbuysell.repository.ListingInCartRepository;
 import id.ac.ui.cs.advprog.backendbuysell.repository.ListingRepository;
-import id.ac.ui.cs.advprog.backendbuysell.repository.SellerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -26,6 +25,10 @@ public class CartService {
 
     @Autowired
     private SellerService sellerService;
+
+    @Autowired
+    private OrderService orderService;
+
 
 
     public Cart findByUser(User user) {
@@ -81,6 +84,10 @@ public class CartService {
             order = sellerToOrderMap.get(sellerId);
             ListingInOrder listingInOrder = new ListingInOrder(listing, quantity);
             order.addListingInOrder(listingInOrder);
+        }
+
+        for (Order order: sellerToOrderMap.values()){
+            orderService.create(order);
         }
     }
 }
