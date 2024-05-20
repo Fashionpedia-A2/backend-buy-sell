@@ -1,8 +1,8 @@
 package id.ac.ui.cs.advprog.backendbuysell.controller;
 
 import id.ac.ui.cs.advprog.backendbuysell.dto.ApiResponse;
-import id.ac.ui.cs.advprog.backendbuysell.dto.ListingSearchRequestDTO;
-import id.ac.ui.cs.advprog.backendbuysell.dto.ListingSearchResponseDTO;
+import id.ac.ui.cs.advprog.backendbuysell.dto.ListingListRequestDTO;
+import id.ac.ui.cs.advprog.backendbuysell.dto.ListingListResponseDTO;
 import id.ac.ui.cs.advprog.backendbuysell.exception.FieldValidationException;
 import id.ac.ui.cs.advprog.backendbuysell.exception.ForbiddenException;
 import id.ac.ui.cs.advprog.backendbuysell.model.Listing;
@@ -28,34 +28,34 @@ public class ListingController {
     ListingService listingService;
 
     @GetMapping("/listing")
-    public ResponseEntity<ApiResponse<ListingSearchResponseDTO>> getAllListings(
-            ListingSearchRequestDTO request,
-            @PageableDefault(page = 0, size = 40) @SortDefault(sort = "name", direction = Sort.Direction.ASC) Pageable pageable) {
+    public ResponseEntity<ApiResponse<ListingListResponseDTO>> getAllListings(
+            ListingListRequestDTO request,
+            @PageableDefault(page = 0, size = 40) @SortDefault(sort = "id", direction = Sort.Direction.ASC) Pageable pageable) {
         request.setPageable(pageable);
-        ListingSearchResponseDTO result = listingService.getAll(request);
-        ApiResponse<ListingSearchResponseDTO> response = ApiResponse.success(result);
+        ListingListResponseDTO result = listingService.getAll(request);
+        ApiResponse<ListingListResponseDTO> response = ApiResponse.success(result);
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/buyer/listing")
-    public ResponseEntity<ApiResponse<ListingSearchResponseDTO>> getBuyerViewListings(
-            ListingSearchRequestDTO request,
-            @PageableDefault(page = 0, size = 40) @SortDefault(sort = "name", direction = Sort.Direction.ASC) Pageable pageable) {
+    @GetMapping("/listing-buyer")
+    public ResponseEntity<ApiResponse<ListingListResponseDTO>> getBuyerViewListings(
+            ListingListRequestDTO request,
+            @PageableDefault(page = 0, size = 40) @SortDefault(sort = "id", direction = Sort.Direction.ASC) Pageable pageable) {
         request.setPageable(pageable);
-        ListingSearchResponseDTO result = listingService.getActiveListings(request);
-        ApiResponse<ListingSearchResponseDTO> response = ApiResponse.success(result);
+        ListingListResponseDTO result = listingService.getActiveListings(request);
+        ApiResponse<ListingListResponseDTO> response = ApiResponse.success(result);
         return ResponseEntity.ok(response);
     }
 
     @GetMapping("/seller/listing")
-    public ResponseEntity<ApiResponse<ListingSearchResponseDTO>> getSellerListings(
-            ListingSearchRequestDTO request,
-            @PageableDefault(page = 0, size = 40) @SortDefault(sort = "name", direction = Sort.Direction.ASC) Pageable pageable,
+    public ResponseEntity<ApiResponse<ListingListResponseDTO>> getSellerListings(
+            ListingListRequestDTO request,
+            @PageableDefault(page = 0, size = 40) @SortDefault(sort = "id", direction = Sort.Direction.ASC) Pageable pageable,
             @RequestHeader("Authorization") String token) {
-        String sellerId = JwtHelper.getUserIdFromToken(token);
+        Long sellerId = JwtHelper.getUserIdFromToken(token);
         request.setPageable(pageable);
-        ListingSearchResponseDTO result = listingService.getSellerListings(sellerId, request);
-        ApiResponse<ListingSearchResponseDTO> response = ApiResponse.success(result);
+        ListingListResponseDTO result = listingService.getSellerListings(sellerId, request);
+        ApiResponse<ListingListResponseDTO> response = ApiResponse.success(result);
         return ResponseEntity.ok(response);
     }
 
@@ -77,7 +77,7 @@ public class ListingController {
             @RequestBody Listing listing,  @RequestHeader("Authorization") String token) {
         ApiResponse<Listing> response;
         try {
-            String sellerId = JwtHelper.getUserIdFromToken(token);
+            Long sellerId = JwtHelper.getUserIdFromToken(token);
             Listing createdListing = listingService.create(listing, sellerId);
             response = ApiResponse.success(createdListing, "Listing created successfully.");
             return ResponseEntity.status(HttpStatus.CREATED).body(response);
@@ -98,7 +98,7 @@ public class ListingController {
             @RequestHeader("Authorization") String token) {
         ApiResponse<Listing> response;
         try {
-            String sellerId = JwtHelper.getUserIdFromToken(token);
+            Long sellerId = JwtHelper.getUserIdFromToken(token);
             Listing savedListing = listingService.update(id, newListing, sellerId);
             response = ApiResponse.success(savedListing, "Listing updated successfully.");
             return ResponseEntity.ok(response);
@@ -121,7 +121,7 @@ public class ListingController {
             @PathVariable Long id, @RequestHeader("Authorization") String token) {
         ApiResponse<Listing> response;
         try {
-            String sellerId = JwtHelper.getUserIdFromToken(token);
+            Long sellerId = JwtHelper.getUserIdFromToken(token);
             Listing deletedListing = listingService.delete(id, sellerId);
             response = ApiResponse.success(deletedListing, "Listing deleted successfully.");
             return ResponseEntity.ok(response);

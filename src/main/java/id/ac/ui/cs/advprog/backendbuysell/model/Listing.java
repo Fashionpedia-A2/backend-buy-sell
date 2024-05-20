@@ -11,6 +11,7 @@ import jakarta.validation.Validation;
 import jakarta.validation.Validator;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.validation.BeanPropertyBindingResult;
@@ -34,10 +35,10 @@ public class Listing {
     @Column(name = "name", nullable = false)
     private String name;
 
-    @JsonProperty("seller_id")
-    @NotBlank(message = "Seller_id must not be blank")
-    @Column(name = "seller_id", nullable = false)
-    private String sellerId;
+    @NotNull(message = "Seller must not be empty")
+    @ManyToOne
+    @JoinColumn(name = "seller_id")
+    private Seller seller;
 
     @NotNull(message = "Stock must not be empty")
     @Column(name = "stock", nullable = false)
@@ -65,16 +66,24 @@ public class Listing {
 
     @Column(name = "description")
     private String description;
+    
 
-    public Listing(String name, String sellerId, int stock, Long price) {
-        setName(name);
-        setSellerId(sellerId);
-        setStock(stock);
-        setPrice(price);
-        setStatus(ListingStatus.PENDING.getValue());
+
+    public Listing(){
+
     }
 
-    public Listing() {
+    @Builder
+    public Listing(String name, String imageUrl, int stock, Long price, String size, String condition, Seller seller, String description){
+        this.name = name;
+        this.imageUrl = imageUrl;
+        this.stock = stock;
+        this.price = price;
+        this.size = size;
+        this.condition = condition;
+        this.seller = seller;
+        this.description = description;
+        setStatus(ListingStatus.PENDING.getValue());
     }
 
     public void setStatus(String status) {

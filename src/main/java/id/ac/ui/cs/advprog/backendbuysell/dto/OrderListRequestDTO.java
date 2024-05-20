@@ -1,23 +1,23 @@
 package id.ac.ui.cs.advprog.backendbuysell.dto;
 
-import id.ac.ui.cs.advprog.backendbuysell.model.category.Category;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.domain.Pageable;
 
+import java.util.Date;
 import java.util.List;
 
-@Getter
 @Setter
+@Getter
 @Builder
-public class ListingSearchRequestDTO {
-    private String name;
-    private Long minPrice;
-    private Long maxPrice;
-    private List<String> conditions;
+public class OrderListRequestDTO {
     private List<String> statuses;
-    private String sellerId;
+    private Long sellerId;
+    private Long buyerId;
+    private Long paymentId;
+    private Date createdAtStart;
+    private Date createdAtEnd;
 
     private Pageable pageable;
 }
