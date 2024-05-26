@@ -13,12 +13,8 @@ public class OrderSearchQueryBuilder {
         return (root, query, builder) -> {
             List<Predicate> predicates = new ArrayList<>();
 
-            if (searchCriteria.getStatuses() != null) {
-                List<Predicate> statusPredicates = new ArrayList<>();
-                for (String status : searchCriteria.getStatuses()) {
-                    statusPredicates.add(builder.equal(builder.upper(root.get("status")), status.toUpperCase()));
-                }
-                predicates.add(builder.or(statusPredicates.toArray(new Predicate[]{})));
+            if (searchCriteria.getStatus() != null) {
+                predicates.add(builder.like(builder.upper(root.get("status")), searchCriteria.getStatus().toUpperCase()));
             }
 
             if (searchCriteria.getSellerId() != null) {
@@ -38,6 +34,12 @@ public class OrderSearchQueryBuilder {
             }
             if (searchCriteria.getCreatedAtEnd() != null) {
                 predicates.add(builder.lessThanOrEqualTo(root.get("createdAt"), searchCriteria.getCreatedAtEnd().toString()));
+            }
+            if (searchCriteria.getUpdatedAtStart() != null) {
+                predicates.add(builder.greaterThanOrEqualTo(root.get("updatedAt"), searchCriteria.getUpdatedAtStart().toString()));
+            }
+            if (searchCriteria.getUpdatedAtEnd() != null) {
+                predicates.add(builder.lessThanOrEqualTo(root.get("updatedAt"), searchCriteria.getUpdatedAtEnd().toString()));
             }
 
             return builder.and(predicates.toArray(new Predicate[]{}));
