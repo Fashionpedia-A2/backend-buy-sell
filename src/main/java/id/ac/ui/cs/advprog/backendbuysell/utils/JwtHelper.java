@@ -11,12 +11,8 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class JwtHelper {
-    private static JwtService jwtService;
-
     @Autowired
-    JwtHelper(JwtService jwtService){
-        JwtHelper.jwtService = jwtService;
-    }
+    private static JwtService jwtService;
 
     public static Long getUserIdFromToken(String jwtToken) {
         if (jwtToken == null || !jwtToken.startsWith("Bearer ")) {
