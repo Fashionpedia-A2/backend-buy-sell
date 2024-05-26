@@ -19,14 +19,20 @@ import org.springframework.data.web.SortDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 import java.util.List;
 import java.util.Optional;
 
 @RestController
+@EnableWebMvc
+@CrossOrigin
 public class OrderController {
     @Autowired
     OrderService orderService;
+
+    @Autowired
+    JwtHelper jwtHelper;
 
     @PostMapping("/order")
     public ResponseEntity<ApiResponse<Order>> createOrder(@RequestBody Order order) {
@@ -74,7 +80,7 @@ public class OrderController {
             OrderListRequestDTO request,
             @PageableDefault(page = 0, size = 40) @SortDefault(sort = "createdAt", direction = Sort.Direction.ASC) Pageable pageable,
             @RequestHeader("Authorization") String token) {
-        Long buyerId = JwtHelper.getUserIdFromToken(token);
+        Long buyerId = jwtHelper.getUserIdFromToken(token);
         request.setPageable(pageable);
         OrderListResponseDTO result = orderService.getAllBuyerOrders(buyerId, request);
         ApiResponse<OrderListResponseDTO> response = ApiResponse.success(result);
@@ -87,7 +93,7 @@ public class OrderController {
             OrderListRequestDTO request,
             @PageableDefault(page = 0, size = 40) @SortDefault(sort = "createdAt", direction = Sort.Direction.ASC) Pageable pageable,
             @RequestHeader("Authorization") String token) {
-        Long sellerId = JwtHelper.getUserIdFromToken(token);
+        Long sellerId = jwtHelper.getUserIdFromToken(token);
         request.setPageable(pageable);
         OrderListResponseDTO result = orderService.getAllSellerOrders(sellerId, request);
         ApiResponse<OrderListResponseDTO> response = ApiResponse.success(result);
@@ -99,7 +105,7 @@ public class OrderController {
             @PathVariable Long id, @RequestHeader("Authorization") String token, @RequestBody OrderStatusRequestDTO orderStatusRequestDTO) {
         ApiResponse<Order> response;
         try {
-            Long sellerId = JwtHelper.getUserIdFromToken(token);
+            Long sellerId = jwtHelper.getUserIdFromToken(token);
             Order result = orderService.updateOrderStatus(id, orderStatusRequestDTO.getStatus(), sellerId);
             response = ApiResponse.success(result, "Order status successfully created.");
             return ResponseEntity.ok(response);
