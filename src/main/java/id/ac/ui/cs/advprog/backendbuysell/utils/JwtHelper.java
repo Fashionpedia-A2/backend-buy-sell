@@ -14,7 +14,7 @@ public class JwtHelper {
     private static JwtService jwtService;
 
     @Autowired
-    public JwtHelper(JwtService jwtService){
+    JwtHelper(JwtService jwtService){
         JwtHelper.jwtService = jwtService;
     }
 
