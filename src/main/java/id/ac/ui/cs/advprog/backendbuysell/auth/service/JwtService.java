@@ -22,8 +22,6 @@ import java.util.function.Function;
 @Service
 public class JwtService {
 
-    private final String SecretKey = System.getenv("JWT_SECRET_KEY");
-
     @Autowired
     private UserRepository userRepository;
     public User extractUser(String token){
@@ -84,7 +82,8 @@ public class JwtService {
     }
 
     private Key getSignInKey() {
-        byte[] keyBytes = Decoders.BASE64.decode(SecretKey);
+        String secretKey = "645367566B59703373367639792F423F4528482B4D6251655468576D5A713474";
+        byte[] keyBytes = Decoders.BASE64.decode(secretKey);
         return Keys.hmacShaKeyFor(keyBytes);
     }
 
