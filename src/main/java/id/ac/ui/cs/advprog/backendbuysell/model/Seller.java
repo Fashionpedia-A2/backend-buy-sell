@@ -5,17 +5,30 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.Immutable;
 
 import java.util.List;
 
+@Entity
+@Table(name="seller")
 @Setter
 @Getter
 public class Seller {
-
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name="name")
     private String name;
 
+    @OneToMany(mappedBy = "seller")
     private List<Listing> listing;
+    @Override
+    public String toString() {
+        ObjectMapper om = new ObjectMapper();
+        try {
+            return om.writeValueAsString(this);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }
