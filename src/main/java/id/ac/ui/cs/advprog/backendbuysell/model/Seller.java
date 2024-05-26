@@ -19,28 +19,3 @@ public class Seller {
 
     private List<Listing> listing;
 }
-//@Entity
-//@Table(name="seller")
-//@Getter
-//@Immutable
-//public class Seller {
-//    @Setter
-//    @Id
-//    @GeneratedValue(strategy = GenerationType.IDENTITY)
-//    private Long id;
-//
-//    @Setter
-//    private String name;
-//
-//    @OneToMany(mappedBy = "sellerId")
-//    private List<Listing> listing;
-//    @Override
-//    public String toString() {
-//        ObjectMapper om = new ObjectMapper();
-//        try {
-//            return om.writeValueAsString(this);
-//        } catch (JsonProcessingException e) {
-//            throw new RuntimeException(e);
-//        }
-//    }
-//}
