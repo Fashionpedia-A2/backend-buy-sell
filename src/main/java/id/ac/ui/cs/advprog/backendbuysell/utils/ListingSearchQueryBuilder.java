@@ -14,7 +14,7 @@ public class ListingSearchQueryBuilder {
             List<Predicate> predicates = new ArrayList<>();
 
             if (searchCriteria.getName() != null) {
-                predicates.add(builder.like(root.get("name"), "%" + searchCriteria.getName() + "%"));
+                predicates.add(builder.like(builder.lower(root.get("name")), "%" + searchCriteria.getName().toLowerCase() + "%"));
             }
 
             if (searchCriteria.getMinPrice() != null) {
@@ -31,9 +31,9 @@ public class ListingSearchQueryBuilder {
                 predicates.add(builder.or(conditionPredicates.toArray(new Predicate[]{})));
             }
 
-            if (searchCriteria.getStatuses() != null) {
+            if (searchCriteria.getStatus() != null) {
                 List<Predicate> statusPredicates = new ArrayList<>();
-                for (String status : searchCriteria.getStatuses()) {
+                for (String status : searchCriteria.getStatus()) {
                     statusPredicates.add(builder.like(builder.upper(root.get("status")), status.toUpperCase()));
                 }
                 predicates.add(builder.or(statusPredicates.toArray(new Predicate[]{})));

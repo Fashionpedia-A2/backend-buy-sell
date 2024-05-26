@@ -1,5 +1,6 @@
 package id.ac.ui.cs.advprog.backendbuysell.dto;
 
+import id.ac.ui.cs.advprog.backendbuysell.model.Buyer;
 import id.ac.ui.cs.advprog.backendbuysell.model.Order;
 import lombok.Getter;
 import lombok.Setter;
@@ -16,11 +17,11 @@ public class OrderDTO {
     private String status;
     private Long totalPrice;
     private Long sellerId;
-    private Long buyerId;
+    private Buyer buyer;
     private Long paymentId;
     private List<ListingInOrderDTO> listings;
 
-    public static OrderDTO fromOrder(Order order) {
+    public static OrderDTO fromOrder(Order order, Buyer buyer) {
         OrderDTO orderDTO = new OrderDTO();
         orderDTO.setId(order.getId());
         orderDTO.setCreatedAt(order.getCreatedAt());
@@ -28,7 +29,7 @@ public class OrderDTO {
         orderDTO.setStatus(order.getStatus());
         orderDTO.setTotalPrice(order.getTotalPrice());
         orderDTO.setSellerId(order.getSellerId());
-        orderDTO.setBuyerId(order.getBuyerId());
+        orderDTO.setBuyer(buyer);
         orderDTO.setPaymentId(order.getPaymentId());
         orderDTO.setListings(order.getListingInOrders().stream()
                                      .map(ListingInOrderDTO::fromListingInOrder)

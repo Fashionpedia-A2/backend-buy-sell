@@ -69,7 +69,7 @@ public class CartService {
         Map<Long, Order> sellerToOrderMap = new HashMap<>();
 
         for (ListingInCart lic: list){
-            //listingInCartRepository.delete(lic);
+            listingInCartRepository.delete(lic);
             Listing listing = lic.getListing();
             Long sellerId = lic.getListing().getSellerId();
             int quantity = lic.getQuantity();

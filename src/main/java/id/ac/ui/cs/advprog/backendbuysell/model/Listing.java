@@ -53,7 +53,7 @@ public class Listing {
     private Long price;
 
     @Column(name = "status", nullable = false)
-    private String status = ListingStatus.PENDING.getValue();
+    private String status;
 
     @Column(name = "category")
     private String category;
@@ -78,7 +78,7 @@ public class Listing {
     }
 
     @Builder
-    public Listing(String name, String imageUrl, int stock, Long price, String size, String condition, Long sellerId, String description){
+    public Listing(String name, String imageUrl, int stock, Long price, String size, String condition, Long sellerId, String description, String status){
         this.name = name;
         this.imageUrl = imageUrl;
         this.stock = stock;
@@ -87,7 +87,7 @@ public class Listing {
         this.condition = condition;
         this.sellerId = sellerId;
         this.description = description;
-        setStatus(ListingStatus.PENDING.getValue());
+        setStatus(status);
     }
 
     public void setStatus(String status) {

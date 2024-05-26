@@ -15,7 +15,7 @@ public class ListingListRequestDTO {
     private Long minPrice;
     private Long maxPrice;
     private List<String> conditions;
-    private List<String> statuses;
+    private List<String> status;
     private Long sellerId;
 
     private Pageable pageable;
