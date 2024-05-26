@@ -12,9 +12,9 @@ import org.springframework.stereotype.Component;
 @Component
 public class JwtHelper {
     @Autowired
-    private static JwtService jwtService;
+    private JwtService jwtService;
 
-    public static Long getUserIdFromToken(String jwtToken) {
+    public Long getUserIdFromToken(String jwtToken) {
         if (jwtToken == null || !jwtToken.startsWith("Bearer ")) {
             throw new RuntimeException("Missing or invalid Authorization header");
         }
@@ -22,7 +22,7 @@ public class JwtHelper {
         return getUserIdFromTokenWithCheckUserRepository(tokenWithoutBearer);
     }
 
-    private static Long getUserIdFromTokenWithCheckUserRepository(String token){
+    private Long getUserIdFromTokenWithCheckUserRepository(String token){
         User user = jwtService.extractUser(token);
         if (!jwtService.isTokenValid(token, user)) {
             throw new RuntimeException("Invalid token");
