@@ -22,7 +22,7 @@ import java.util.function.Function;
 @Service
 public class JwtService {
 
-    private final String SecretKey = System.getenv("JWT_SECRET_KEY");
+    private final String secretKey = System.getenv("JWT_SECRET_KEY");
 
     @Autowired
     private UserRepository userRepository;
@@ -84,7 +84,7 @@ public class JwtService {
     }
 
     private Key getSignInKey() {
-        byte[] keyBytes = Decoders.BASE64.decode(SecretKey);
+        byte[] keyBytes = Decoders.BASE64.decode(secretKey);
         return Keys.hmacShaKeyFor(keyBytes);
     }
 
