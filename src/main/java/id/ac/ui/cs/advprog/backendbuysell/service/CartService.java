@@ -23,6 +23,13 @@ public class CartService {
     @Autowired
     private ListingRepository listingRepository;
 
+    @Autowired
+    private SellerService sellerService;
+
+    @Autowired
+    private OrderService orderService;
+
+
 
     public Cart findByUser(User user) {
         Optional<Cart> cart =  cartRepository.findByUser(user);
@@ -49,7 +56,8 @@ public class CartService {
         List<ListingInCartDetailsDto> output = new ArrayList<ListingInCartDetailsDto>();
         for (ListingInCart lic : list){
             ListingInCartDetailsDto dto = new ListingInCartDetailsDto();
-            dto.setListing(new ListingDetailsDto(lic.getListing()));
+            Seller seller = sellerService.findById(lic.getListing().getSellerId());
+            dto.setListing(new ListingDetailsDto(lic.getListing(), seller));
             dto.setQuantity(lic.getQuantity());
             output.add(dto);
         }
@@ -58,32 +66,28 @@ public class CartService {
 
     public void checkout(User user){
         List<ListingInCart> list = listingInCartRepository.findByUser(user);
-        Map<Long, Order> peta = new HashMap<>();
+        Map<Long, Order> sellerToOrderMap = new HashMap<>();
 
         for (ListingInCart lic: list){
             //listingInCartRepository.delete(lic);
             Listing listing = lic.getListing();
-            Seller seller = lic.getListing().getSeller();
+            Long sellerId = lic.getListing().getSellerId();
             int quantity = lic.getQuantity();
-            long sellerId = lic.getListing().getSeller().getId();
 
-            Order order = peta.get(sellerId);
+            Order order = sellerToOrderMap.get(sellerId);
             if (order == null){
                 order = new Order();
-                order.setSeller(seller);
+                order.setSellerId(sellerId);
                 order.setBuyerId(Long.valueOf(user.getId()));
-                peta.put(sellerId, order);
-
+                sellerToOrderMap.put(sellerId, order);
             }
+            order = sellerToOrderMap.get(sellerId);
             ListingInOrder listingInOrder = new ListingInOrder(listing, quantity);
-        }
-        Collection<Order> orders = peta.values();
-        for (Order order:  orders){
-            // TODO: Hamdi, tolong set atribut yg perlu (createdAt, updatedAt, totalPrice, dll) ~fred
-            //order.setCreatedAt(today);
-            //order.setUpdatedAt(today);
-            //order.setPaymentId(today);
+            order.addListingInOrder(listingInOrder);
         }
 
+        for (Order order: sellerToOrderMap.values()){
+            orderService.create(order);
+        }
     }
 }

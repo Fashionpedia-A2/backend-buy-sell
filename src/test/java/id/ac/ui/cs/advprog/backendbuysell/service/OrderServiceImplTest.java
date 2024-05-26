@@ -1,5 +1,6 @@
 package id.ac.ui.cs.advprog.backendbuysell.service;
 
+import id.ac.ui.cs.advprog.backendbuysell.dto.OrderDTO;
 import id.ac.ui.cs.advprog.backendbuysell.dto.OrderListRequestDTO;
 import id.ac.ui.cs.advprog.backendbuysell.enums.OrderStatus;
 import id.ac.ui.cs.advprog.backendbuysell.exception.FieldValidationException;
@@ -37,20 +38,16 @@ public class OrderServiceImplTest {
     OrderServiceImpl orderService;
 
     List<Order> orders;
+    List<OrderDTO> orderDTOS;
     OrderListRequestDTO orderListRequestDTO;
     SimpleDateFormat dateFormatter;
 
     @BeforeEach
     void setUp() throws Exception {
-        Seller seller1 = new Seller();
-        seller1.setId(1L);
-        Seller seller2 = new Seller();
-        seller2.setId(2L);
-        
-        Listing listing1 = Listing.builder().name("Celana Denim").seller(seller1).stock(10).price(100_000L).build();
-        Listing listing2 = Listing.builder().name("Kaos").seller(seller1).stock(10).price(35_000L).build();
-        Listing listing3 = Listing.builder().name("Kerudung").seller(seller2).stock(40).price(155_000L).build();
-        Listing listing4 = Listing.builder().name("Gamis Shimmer").seller(seller2).stock(33).price(200_000L).build();
+        Listing listing1 = Listing.builder().name("Celana Denim").sellerId(1L).stock(10).price(100_000L).build();
+        Listing listing2 = Listing.builder().name("Kaos").sellerId(1L).stock(10).price(35_000L).build();
+        Listing listing3 = Listing.builder().name("Kerudung").sellerId(2L).stock(40).price(155_000L).build();
+        Listing listing4 = Listing.builder().name("Gamis Shimmer").sellerId(2L).stock(33).price(200_000L).build();
 
 
         ListingInOrder listingInOrder1 = new ListingInOrder(listing1, 1);
@@ -73,7 +70,7 @@ public class OrderServiceImplTest {
         order1.setId(1L);
         order1.setListingInOrders(listingInOrders1);
         order1.setBuyerId(1L);
-        order1.setSeller(listing1.getSeller());
+        order1.setSellerId(listing1.getSellerId());
         order1.setStatus(OrderStatus.MENUNGGU_PEMBAYARAN.name());
         order1.setCreatedAt(dateFormatter.parse("01/01/2024"));
 
@@ -81,7 +78,7 @@ public class OrderServiceImplTest {
         order2.setId(2L);
         order2.setListingInOrders(listingInOrders2);
         order2.setBuyerId(2L);
-        order2.setSeller(listing3.getSeller());
+        order2.setSellerId(listing3.getSellerId());
         order2.setStatus(OrderStatus.MENUNGGU_PROSES.name());
         order2.setCreatedAt(dateFormatter.parse("02/01/2024"));
 
@@ -89,7 +86,7 @@ public class OrderServiceImplTest {
         order3.setId(3L);
         order3.setListingInOrders(listingInOrders3);
         order3.setBuyerId(1L);
-        order3.setSeller(listing1.getSeller());
+        order3.setSellerId(listing1.getSellerId());
         order3.setStatus(OrderStatus.DIKIRIM.name());
         order3.setCreatedAt(dateFormatter.parse("03/01/2024"));
 
@@ -97,7 +94,7 @@ public class OrderServiceImplTest {
         order4.setId(4L);
         order4.setListingInOrders(listingInOrders4);
         order4.setBuyerId(2L);
-        order4.setSeller(listing3.getSeller());
+        order4.setSellerId(listing3.getSellerId());
         order4.setStatus(OrderStatus.DIBATALKAN.name());
         order4.setCreatedAt(dateFormatter.parse("04/01/2024"));
 
@@ -106,6 +103,11 @@ public class OrderServiceImplTest {
         orders.add(order2);
         orders.add(order3);
         orders.add(order4);
+
+        orderDTOS = new ArrayList<>();
+        for(Order order: orders){
+            orderDTOS.add(OrderDTO.fromOrder(order));
+        }
 
         orderListRequestDTO = OrderListRequestDTO.builder().pageable(PageRequest.of(0, 20)).build();
     }
@@ -118,7 +120,7 @@ public class OrderServiceImplTest {
         Order result = orderService.create(order);
 
         verify(orderRepository, times(1)).save(any(Order.class));
-        assertEquals(order.getSeller().getId(), result.getSeller().getId());
+        assertEquals(order.getSellerId(), result.getSellerId());
     }
 
     @Test
@@ -134,7 +136,7 @@ public class OrderServiceImplTest {
         Page<Order> page = new PageImpl<>(this.orders);
         doReturn(page).when(orderRepository).findAll(ArgumentMatchers.<Specification<Order>>any(), any(Pageable.class));
 
-        List<Order> result = orderService.getAll(orderListRequestDTO).getOrders();
+        List<OrderDTO> result = orderService.getAll(orderListRequestDTO).getOrders();
         assertEquals(this.orders.size(), result.size());
     }
 
@@ -148,7 +150,7 @@ public class OrderServiceImplTest {
         List<String> statuses = new ArrayList<>();
         statuses.add(OrderStatus.DIBATALKAN.name());
         orderListRequestDTO.setStatuses(statuses);
-        List<Order> result = orderService.getAll(orderListRequestDTO).getOrders();
+        List<OrderDTO> result = orderService.getAll(orderListRequestDTO).getOrders();
 
         assertEquals(cancelledOrders.size(), result.size());
     }
@@ -163,7 +165,7 @@ public class OrderServiceImplTest {
 
         Date startDate = dateFormatter.parse("01/03/2024");
         orderListRequestDTO.setCreatedAtStart(startDate);
-        List<Order> result = orderService.getAll(orderListRequestDTO).getOrders();
+        List<OrderDTO> result = orderService.getAll(orderListRequestDTO).getOrders();
 
         assertEquals(orders.size(), result.size());
     }
@@ -178,7 +180,7 @@ public class OrderServiceImplTest {
 
         Date endDate = dateFormatter.parse("01/02/2024");
         orderListRequestDTO.setCreatedAtEnd(endDate);
-        List<Order> result = orderService.getAll(orderListRequestDTO).getOrders();
+        List<OrderDTO> result = orderService.getAll(orderListRequestDTO).getOrders();
 
         assertEquals(orders.size(), result.size());
     }
@@ -195,7 +197,7 @@ public class OrderServiceImplTest {
         Date endDate = dateFormatter.parse("01/03/2024");
         orderListRequestDTO.setCreatedAtStart(startDate);
         orderListRequestDTO.setCreatedAtEnd(endDate);
-        List<Order> result = orderService.getAll(orderListRequestDTO).getOrders();
+        List<OrderDTO> result = orderService.getAll(orderListRequestDTO).getOrders();
 
         assertEquals(orders.size(), result.size());
     }
@@ -208,8 +210,8 @@ public class OrderServiceImplTest {
         Page<Order> page = new PageImpl<>(orders);
         doReturn(page).when(orderRepository).findAll(ArgumentMatchers.<Specification<Order>>any(), any(Pageable.class));
 
-        orderListRequestDTO.setSellerId(orders.getFirst().getSeller().getId());
-        List<Order> result = orderService.getAll(orderListRequestDTO).getOrders();
+        orderListRequestDTO.setSellerId(orders.getFirst().getSellerId());
+        List<OrderDTO> result = orderService.getAll(orderListRequestDTO).getOrders();
 
         assertEquals(orders.size(), result.size());
     }
@@ -223,7 +225,7 @@ public class OrderServiceImplTest {
         doReturn(page).when(orderRepository).findAll(ArgumentMatchers.<Specification<Order>>any(), any(Pageable.class));
 
         orderListRequestDTO.setBuyerId(orders.getFirst().getBuyerId());
-        List<Order> result = orderService.getAll(orderListRequestDTO).getOrders();
+        List<OrderDTO> result = orderService.getAll(orderListRequestDTO).getOrders();
 
         assertEquals(orders.size(), result.size());
     }
@@ -253,7 +255,7 @@ public class OrderServiceImplTest {
         doReturn(Optional.of(order)).when(orderRepository).findById(any(Long.class));
         doReturn(order).when(orderRepository).save(any(Order.class));
 
-        Order result = orderService.updateOrderStatus(order.getId(), OrderStatus.DIPROSES.name(), order.getSeller().getId());
+        Order result = orderService.updateOrderStatus(order.getId(), OrderStatus.DIPROSES.name(), order.getSellerId());
         verify(orderRepository, times(1)).save(any(Order.class));
         assertEquals(order.getStatus(), result.getStatus());
     }
@@ -263,7 +265,7 @@ public class OrderServiceImplTest {
         Order order = orders.getFirst();
         doReturn(Optional.empty()).when(orderRepository).findById(any(Long.class));
         assertThrows(NoSuchElementException.class,
-                     () -> orderService.updateOrderStatus(111L, OrderStatus.DIPROSES.name(), order.getSeller().getId()));
+                     () -> orderService.updateOrderStatus(111L, OrderStatus.DIPROSES.name(), order.getSellerId()));
         verify(orderRepository, times(0)).save(any(Order.class));
     }
 
@@ -272,7 +274,7 @@ public class OrderServiceImplTest {
         Order order = orders.getFirst();
         doReturn(Optional.of(order)).when(orderRepository).findById(any(Long.class));
         assertThrows(FieldValidationException.class,
-                     () -> orderService.updateOrderStatus(order.getId(), "TERBAANG", order.getSeller().getId()));
+                     () -> orderService.updateOrderStatus(order.getId(), "TERBAANG", order.getSellerId()));
         verify(orderRepository, times(0)).save(any(Order.class));
     }
 

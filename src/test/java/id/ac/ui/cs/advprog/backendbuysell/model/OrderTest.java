@@ -17,12 +17,9 @@ public class OrderTest {
 
     @BeforeEach
     void setUp() {
-        Seller seller = new Seller();
-        seller.setId(1L);
-
-        Listing listing1 = Listing.builder().name("Celana Denim").seller(seller).stock(10).price(100_000L).build();
-        Listing listing2 = Listing.builder().name("Kaos").seller(seller).stock(10).price(35_000L).build();
-        Listing listing3 = Listing.builder().name("Kerudung").seller(seller).stock(40).price(155_000L).build();
+        Listing listing1 = Listing.builder().name("Celana Denim").sellerId(1L).stock(10).price(100_000L).build();
+        Listing listing2 = Listing.builder().name("Kaos").sellerId(1L).stock(10).price(35_000L).build();
+        Listing listing3 = Listing.builder().name("Kerudung").sellerId(1L).stock(40).price(155_000L).build();
 
 
         ListingInOrder listingInOrder1 = new ListingInOrder(listing1, 1);
@@ -37,7 +34,7 @@ public class OrderTest {
         order = new Order();
         order.setListingInOrders(listingInOrders);
         order.setBuyerId(99L);
-        order.setSeller(listing1.getSeller());
+        order.setSellerId(listing1.getSellerId());
     }
 
     @Test
@@ -108,7 +105,7 @@ public class OrderTest {
 
     @Test
     void whenSellerIsNull_thenHasErrorInValidation() {
-        order.setSeller(null);
+        order.setSellerId(null);
         validationResult = order.validate();
         assertTrue(validationResult.hasErrors());
     }

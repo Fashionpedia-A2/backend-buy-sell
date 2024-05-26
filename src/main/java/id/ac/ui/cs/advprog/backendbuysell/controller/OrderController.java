@@ -3,6 +3,7 @@ package id.ac.ui.cs.advprog.backendbuysell.controller;
 import id.ac.ui.cs.advprog.backendbuysell.dto.ApiResponse;
 import id.ac.ui.cs.advprog.backendbuysell.dto.OrderListRequestDTO;
 import id.ac.ui.cs.advprog.backendbuysell.dto.OrderListResponseDTO;
+import id.ac.ui.cs.advprog.backendbuysell.dto.OrderStatusRequestDTO;
 import id.ac.ui.cs.advprog.backendbuysell.exception.FieldValidationException;
 import id.ac.ui.cs.advprog.backendbuysell.exception.ForbiddenException;
 import id.ac.ui.cs.advprog.backendbuysell.model.Listing;
@@ -80,13 +81,26 @@ public class OrderController {
         return ResponseEntity.ok(response);
     }
 
-    @PutMapping("/seller/status-order/{id}")
-    public ResponseEntity<ApiResponse<Order>> getAllSellerOrders(
-            @PathVariable Long id, @RequestHeader("Authorization") String token, @RequestBody String status) {
+
+    @GetMapping("/seller/order")
+    public ResponseEntity<ApiResponse<OrderListResponseDTO>> getAllSellerOrders(
+            OrderListRequestDTO request,
+            @PageableDefault(page = 0, size = 40) @SortDefault(sort = "createdAt", direction = Sort.Direction.ASC) Pageable pageable,
+            @RequestHeader("Authorization") String token) {
+        Long sellerId = JwtHelper.getUserIdFromToken(token);
+        request.setPageable(pageable);
+        OrderListResponseDTO result = orderService.getAllSellerOrders(sellerId, request);
+        ApiResponse<OrderListResponseDTO> response = ApiResponse.success(result);
+        return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/seller/status-order/{id}")
+    public ResponseEntity<ApiResponse<Order>> updateOrderStatus(
+            @PathVariable Long id, @RequestHeader("Authorization") String token, @RequestBody OrderStatusRequestDTO orderStatusRequestDTO) {
         ApiResponse<Order> response;
         try {
             Long sellerId = JwtHelper.getUserIdFromToken(token);
-            Order result = orderService.updateOrderStatus(id, status, sellerId);
+            Order result = orderService.updateOrderStatus(id, orderStatusRequestDTO.getStatus(), sellerId);
             response = ApiResponse.success(result, "Order status successfully created.");
             return ResponseEntity.ok(response);
         } catch (FieldValidationException e) {

@@ -19,7 +19,7 @@ public class ListingServiceBuy {
     }
 
     public Listing create(Listing l){
-        Listing newListing = new Listing(l.getName(), l.getImageUrl(), l.getStock(), l.getPrice(), l.getSize(), l.getCondition(), l.getSeller(), l.getDescription());
+        Listing newListing = new Listing(l.getName(), l.getImageUrl(), l.getStock(), l.getPrice(), l.getSize(), l.getCondition(), l.getSellerId(), l.getDescription());
         try{
             return listingRepository.save(newListing);
         } catch (DataIntegrityViolationException e){

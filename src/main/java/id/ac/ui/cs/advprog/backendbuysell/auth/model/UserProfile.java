@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 
 import lombok.*;
 
+import java.util.UUID;
+
 @Data
 @Builder
 @NoArgsConstructor
@@ -14,6 +16,16 @@ public class UserProfile {
     @Id
     @GeneratedValue
     private Integer id;
+
+    @Getter
+    private String cartId;
+
+    @PrePersist
+    public void prePersist() {
+        if (this.cartId == null) {
+            this.cartId = UUID.randomUUID().toString();
+        }
+    }
 
     @Getter
     @Setter

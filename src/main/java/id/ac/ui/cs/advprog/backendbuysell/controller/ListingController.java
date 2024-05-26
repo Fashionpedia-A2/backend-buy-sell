@@ -37,7 +37,7 @@ public class ListingController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/listing-buyer")
+    @GetMapping("/buyer/listing-buyer")
     public ResponseEntity<ApiResponse<ListingListResponseDTO>> getBuyerViewListings(
             ListingListRequestDTO request,
             @PageableDefault(page = 0, size = 40) @SortDefault(sort = "id", direction = Sort.Direction.ASC) Pageable pageable) {

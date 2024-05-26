@@ -25,6 +25,7 @@ import java.util.Set;
 @Table(name = "orders")
 @Getter
 @Setter
+
 public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -54,10 +55,9 @@ public class Order {
     @JoinColumn(name = "order_id", nullable = false)
     private List<ListingInOrder> listingInOrders = new ArrayList<>();
 
-    @NotNull(message = "Seller must not be empty")
-    @ManyToOne
-    @JoinColumn(name = "seller_id")
-    private Seller seller;
+    @NotNull(message = "Seller_id must not be empty")
+    @Column(name = "seller_id", nullable = false)
+    private Long sellerId;
 
     @NotNull(message = "Buyer must not be empty")
     @JsonProperty("buyer_id")

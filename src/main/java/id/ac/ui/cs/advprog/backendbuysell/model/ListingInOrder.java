@@ -1,5 +1,6 @@
 package id.ac.ui.cs.advprog.backendbuysell.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validation;
@@ -24,7 +25,8 @@ public class ListingInOrder {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+//    TODO: Make it LAZY
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "listing_id", nullable = false)
     @NotNull
     private Listing listing;

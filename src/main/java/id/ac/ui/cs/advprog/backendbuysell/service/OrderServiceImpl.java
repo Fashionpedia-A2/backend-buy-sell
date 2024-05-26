@@ -1,5 +1,6 @@
 package id.ac.ui.cs.advprog.backendbuysell.service;
 
+import id.ac.ui.cs.advprog.backendbuysell.dto.OrderDTO;
 import id.ac.ui.cs.advprog.backendbuysell.dto.OrderListRequestDTO;
 import id.ac.ui.cs.advprog.backendbuysell.dto.OrderListResponseDTO;
 import id.ac.ui.cs.advprog.backendbuysell.exception.FieldValidationException;
@@ -9,12 +10,15 @@ import id.ac.ui.cs.advprog.backendbuysell.model.Order;
 import id.ac.ui.cs.advprog.backendbuysell.repository.OrderRepository;
 import id.ac.ui.cs.advprog.backendbuysell.utils.ListingSearchQueryBuilder;
 import id.ac.ui.cs.advprog.backendbuysell.utils.OrderSearchQueryBuilder;
+import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.Errors;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -34,9 +38,13 @@ public class OrderServiceImpl implements OrderService {
     public OrderListResponseDTO getAll(OrderListRequestDTO requestDTO) {
         Specification<Order> specification = OrderSearchQueryBuilder.buildSpecification(requestDTO);
         Page<Order> page = orderRepository.findAll(specification, requestDTO.getPageable());
+        List<OrderDTO> orderDTOs = new ArrayList<>();
+        for(Order order: page.getContent()){
+            orderDTOs.add(OrderDTO.fromOrder(order));
+        }
         return OrderListResponseDTO
                 .builder()
-                .orders(page.getContent())
+                .orders(orderDTOs)
                 .currentPage(page.getNumber())
                 .totalPages(page.getTotalPages())
                 .totalItems(page.getTotalElements())
@@ -71,7 +79,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     private boolean isAuthenticated(Order order, Long sellerId) {
-        return order.getSeller().getId().equals(sellerId);
+        return order.getSellerId().equals(sellerId);
     }
 
 }
