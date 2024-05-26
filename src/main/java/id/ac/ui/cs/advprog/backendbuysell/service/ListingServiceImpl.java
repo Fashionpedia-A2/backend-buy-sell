@@ -85,8 +85,8 @@ public class ListingServiceImpl implements ListingService {
 
     public ListingListResponseDTO getActiveListings(ListingListRequestDTO requestDTO) {
         List<String> status = new ArrayList<>();
-        status.add(ListingStatus.VERIFIED.getValue());
-        requestDTO.setStatuses(status);
+        status.add(ListingStatus.ACTIVE.getValue());
+        requestDTO.setStatus(status);
         return this.getAll(requestDTO);
     }
 
