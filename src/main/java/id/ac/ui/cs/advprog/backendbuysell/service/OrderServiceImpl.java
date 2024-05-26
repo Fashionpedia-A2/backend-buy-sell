@@ -5,6 +5,7 @@ import id.ac.ui.cs.advprog.backendbuysell.dto.OrderListRequestDTO;
 import id.ac.ui.cs.advprog.backendbuysell.dto.OrderListResponseDTO;
 import id.ac.ui.cs.advprog.backendbuysell.exception.FieldValidationException;
 import id.ac.ui.cs.advprog.backendbuysell.exception.ForbiddenException;
+import id.ac.ui.cs.advprog.backendbuysell.model.Buyer;
 import id.ac.ui.cs.advprog.backendbuysell.model.Listing;
 import id.ac.ui.cs.advprog.backendbuysell.model.Order;
 import id.ac.ui.cs.advprog.backendbuysell.repository.OrderRepository;
@@ -27,20 +28,26 @@ public class OrderServiceImpl implements OrderService {
     @Autowired
     OrderRepository orderRepository;
 
-    public Order create(Order order) {
+    @Autowired
+    BuyerService buyerService;
+
+    public OrderDTO create(Order order) {
         Errors validationResult = order.validate();
         if (validationResult.hasErrors()) {
             throw new FieldValidationException(validationResult.getAllErrors(), "Validation Error");
         }
-        return orderRepository.save(order);
+        Order savedOrder = orderRepository.save(order);
+        Buyer buyer = buyerService.findById(order.getBuyerId());
+        return OrderDTO.fromOrder(savedOrder, buyer);
     }
 
     public OrderListResponseDTO getAll(OrderListRequestDTO requestDTO) {
         Specification<Order> specification = OrderSearchQueryBuilder.buildSpecification(requestDTO);
         Page<Order> page = orderRepository.findAll(specification, requestDTO.getPageable());
         List<OrderDTO> orderDTOs = new ArrayList<>();
-        for(Order order: page.getContent()){
-            orderDTOs.add(OrderDTO.fromOrder(order));
+        for (Order order : page.getContent()) {
+            Buyer buyer = buyerService.findById(order.getBuyerId());
+            orderDTOs.add(OrderDTO.fromOrder(order, buyer));
         }
         return OrderListResponseDTO
                 .builder()
@@ -51,8 +58,14 @@ public class OrderServiceImpl implements OrderService {
                 .build();
     }
 
-    public Optional<Order> getById(Long id) {
-        return orderRepository.findById(id);
+    public Optional<OrderDTO> getById(Long id) {
+        Optional<Order> result = orderRepository.findById(id);
+        if (result.isEmpty()) {
+            return Optional.empty();
+        }
+        Order order = result.get();;
+        Buyer buyer = buyerService.findById(order.getBuyerId());
+        return Optional.of(OrderDTO.fromOrder(order, buyer));
     }
 
     public OrderListResponseDTO getAllSellerOrders(Long sellerId, OrderListRequestDTO requestDTO) {
@@ -65,7 +78,7 @@ public class OrderServiceImpl implements OrderService {
         return this.getAll(requestDTO);
     }
 
-    public Order updateOrderStatus(Long id, String status, Long sellerId) {
+    public OrderDTO updateOrderStatus(Long id, String status, Long sellerId) {
         Order order = orderRepository.findById(id).orElseThrow();
         if (!isAuthenticated(order, sellerId)) {
             throw new ForbiddenException("User is not authorized to perform action on this order");
@@ -75,7 +88,9 @@ public class OrderServiceImpl implements OrderService {
         if (validationResult.hasErrors()) {
             throw new FieldValidationException(validationResult.getAllErrors(), "Validation Error");
         }
-        return orderRepository.save(order);
+        Order savedOrder = orderRepository.save(order);
+        Buyer buyer = buyerService.findById(order.getBuyerId());
+        return OrderDTO.fromOrder(savedOrder, buyer);
     }
 
     private boolean isAuthenticated(Order order, Long sellerId) {

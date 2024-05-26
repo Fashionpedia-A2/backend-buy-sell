@@ -13,6 +13,10 @@ public class OrderSearchQueryBuilder {
         return (root, query, builder) -> {
             List<Predicate> predicates = new ArrayList<>();
 
+            if(searchCriteria.getId() != null){
+                predicates.add(builder.equal(root.get("id"), searchCriteria.getId()));
+            }
+
             if (searchCriteria.getStatus() != null) {
                 predicates.add(builder.like(builder.upper(root.get("status")), searchCriteria.getStatus().toUpperCase()));
             }
