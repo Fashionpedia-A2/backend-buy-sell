@@ -1,5 +1,6 @@
 package id.ac.ui.cs.advprog.backendbuysell.service;
 
+import id.ac.ui.cs.advprog.backendbuysell.dto.OrderDTO;
 import id.ac.ui.cs.advprog.backendbuysell.dto.OrderListRequestDTO;
 import id.ac.ui.cs.advprog.backendbuysell.enums.OrderStatus;
 import id.ac.ui.cs.advprog.backendbuysell.exception.FieldValidationException;
@@ -37,6 +38,7 @@ public class OrderServiceImplTest {
     OrderServiceImpl orderService;
 
     List<Order> orders;
+    List<OrderDTO> orderDTOS;
     OrderListRequestDTO orderListRequestDTO;
     SimpleDateFormat dateFormatter;
 
@@ -102,6 +104,11 @@ public class OrderServiceImplTest {
         orders.add(order3);
         orders.add(order4);
 
+        orderDTOS = new ArrayList<>();
+        for(Order order: orders){
+            orderDTOS.add(OrderDTO.fromOrder(order));
+        }
+
         orderListRequestDTO = OrderListRequestDTO.builder().pageable(PageRequest.of(0, 20)).build();
     }
 
@@ -129,7 +136,7 @@ public class OrderServiceImplTest {
         Page<Order> page = new PageImpl<>(this.orders);
         doReturn(page).when(orderRepository).findAll(ArgumentMatchers.<Specification<Order>>any(), any(Pageable.class));
 
-        List<Order> result = orderService.getAll(orderListRequestDTO).getOrders();
+        List<OrderDTO> result = orderService.getAll(orderListRequestDTO).getOrders();
         assertEquals(this.orders.size(), result.size());
     }
 
@@ -143,7 +150,7 @@ public class OrderServiceImplTest {
         List<String> statuses = new ArrayList<>();
         statuses.add(OrderStatus.DIBATALKAN.name());
         orderListRequestDTO.setStatuses(statuses);
-        List<Order> result = orderService.getAll(orderListRequestDTO).getOrders();
+        List<OrderDTO> result = orderService.getAll(orderListRequestDTO).getOrders();
 
         assertEquals(cancelledOrders.size(), result.size());
     }
@@ -158,7 +165,7 @@ public class OrderServiceImplTest {
 
         Date startDate = dateFormatter.parse("01/03/2024");
         orderListRequestDTO.setCreatedAtStart(startDate);
-        List<Order> result = orderService.getAll(orderListRequestDTO).getOrders();
+        List<OrderDTO> result = orderService.getAll(orderListRequestDTO).getOrders();
 
         assertEquals(orders.size(), result.size());
     }
@@ -173,7 +180,7 @@ public class OrderServiceImplTest {
 
         Date endDate = dateFormatter.parse("01/02/2024");
         orderListRequestDTO.setCreatedAtEnd(endDate);
-        List<Order> result = orderService.getAll(orderListRequestDTO).getOrders();
+        List<OrderDTO> result = orderService.getAll(orderListRequestDTO).getOrders();
 
         assertEquals(orders.size(), result.size());
     }
@@ -190,7 +197,7 @@ public class OrderServiceImplTest {
         Date endDate = dateFormatter.parse("01/03/2024");
         orderListRequestDTO.setCreatedAtStart(startDate);
         orderListRequestDTO.setCreatedAtEnd(endDate);
-        List<Order> result = orderService.getAll(orderListRequestDTO).getOrders();
+        List<OrderDTO> result = orderService.getAll(orderListRequestDTO).getOrders();
 
         assertEquals(orders.size(), result.size());
     }
@@ -204,7 +211,7 @@ public class OrderServiceImplTest {
         doReturn(page).when(orderRepository).findAll(ArgumentMatchers.<Specification<Order>>any(), any(Pageable.class));
 
         orderListRequestDTO.setSellerId(orders.getFirst().getSellerId());
-        List<Order> result = orderService.getAll(orderListRequestDTO).getOrders();
+        List<OrderDTO> result = orderService.getAll(orderListRequestDTO).getOrders();
 
         assertEquals(orders.size(), result.size());
     }
@@ -218,7 +225,7 @@ public class OrderServiceImplTest {
         doReturn(page).when(orderRepository).findAll(ArgumentMatchers.<Specification<Order>>any(), any(Pageable.class));
 
         orderListRequestDTO.setBuyerId(orders.getFirst().getBuyerId());
-        List<Order> result = orderService.getAll(orderListRequestDTO).getOrders();
+        List<OrderDTO> result = orderService.getAll(orderListRequestDTO).getOrders();
 
         assertEquals(orders.size(), result.size());
     }
