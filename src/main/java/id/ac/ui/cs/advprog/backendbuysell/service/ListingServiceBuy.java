@@ -1,7 +1,9 @@
 package id.ac.ui.cs.advprog.backendbuysell.service;
 
+import id.ac.ui.cs.advprog.backendbuysell.dto.ListingCreationRequestDTO;
 import id.ac.ui.cs.advprog.backendbuysell.model.Listing;
 import id.ac.ui.cs.advprog.backendbuysell.repository.ListingRepository;
+import id.ac.ui.cs.advprog.backendbuysell.repository.SellerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
@@ -14,12 +16,26 @@ public class ListingServiceBuy {
     @Autowired
     private ListingRepository listingRepository;
 
+    @Autowired
+    private SellerRepository sellerRepository;
+
     public List<Listing> findAll(){
         return listingRepository.findAll();
     }
 
-    public Listing create(Listing l){
-        Listing newListing = new Listing(l.getName(), l.getImageUrl(), l.getStock(), l.getPrice(), l.getSize(), l.getCondition(), l.getSellerId(), l.getDescription());
+    public Listing create(ListingCreationRequestDTO l){
+        Listing newListing = new Listing().builder()
+                .name(l.getName())
+                .imageUrl(l.getImageUrl())
+                .stock(l.getStock())
+                .price(l.getPrice())
+                .size(l.getSize())
+                .condition(l.getCondition())
+                .sellerId(l.getSeller_id())
+                .description(l.getDescription())
+                .build();
+
+
         try{
             return listingRepository.save(newListing);
         } catch (DataIntegrityViolationException e){
