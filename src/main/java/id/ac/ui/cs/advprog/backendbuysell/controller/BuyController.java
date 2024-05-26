@@ -4,10 +4,7 @@ import id.ac.ui.cs.advprog.backendbuysell.auth.model.User;
 import id.ac.ui.cs.advprog.backendbuysell.auth.repository.UserRepository;
 import id.ac.ui.cs.advprog.backendbuysell.auth.service.JwtService;
 import id.ac.ui.cs.advprog.backendbuysell.builder.ListingInCartBuilder;
-import id.ac.ui.cs.advprog.backendbuysell.dto.CreateListingRequestDTO;
-import id.ac.ui.cs.advprog.backendbuysell.dto.ListingDetailsDto;
-import id.ac.ui.cs.advprog.backendbuysell.dto.ListingInCartDetailsDto;
-import id.ac.ui.cs.advprog.backendbuysell.dto.SellerDetailsDto;
+import id.ac.ui.cs.advprog.backendbuysell.dto.*;
 import id.ac.ui.cs.advprog.backendbuysell.model.*;
 import id.ac.ui.cs.advprog.backendbuysell.service.CartService;
 import id.ac.ui.cs.advprog.backendbuysell.service.ListingServiceBuy;
@@ -93,11 +90,11 @@ public class BuyController {
     }
 
     @PostMapping("cart/create")  // memasukkan listing ke dalam cart
-    public ResponseEntity<String> createListingInCart(@RequestBody CreateListingRequestDTO data, HttpServletRequest request) {
+    public ResponseEntity<String> createListingInCart(@RequestBody CreateListingInCartRequestDTO data, HttpServletRequest request) {
         return setListingInCartQuantity(request, data, 1);
     }
     @PostMapping("cart/update")
-    public ResponseEntity<String> updateListingInCartQuantity(@RequestBody CreateListingRequestDTO data, HttpServletRequest request) {
+    public ResponseEntity<String> updateListingInCartQuantity(@RequestBody CreateListingInCartRequestDTO data, HttpServletRequest request) {
         return setListingInCartQuantity(request, data, data.getQuantity());
     }
 
@@ -117,7 +114,7 @@ public class BuyController {
     }
 
 
-    private ResponseEntity<String> setListingInCartQuantity(HttpServletRequest request, CreateListingRequestDTO data, int quantity){
+    private ResponseEntity<String> setListingInCartQuantity(HttpServletRequest request, CreateListingInCartRequestDTO data, int quantity){
         // get user
         User user = authorizeToken(request);
         Cart cart = cartService.findByUser(user);
@@ -139,14 +136,15 @@ public class BuyController {
 
 
     @PostMapping("/listing/create")
-    public ResponseEntity<Object> create(@RequestBody Listing listing) {
+    public ResponseEntity<Object> create(@RequestBody ListingCreationRequestDTO listingCreationRequestDTO) {
         //listingService.create(new Listing("hoho", "url", 12, 123123L, "besar", "baru lah"));
-        Listing l = listingServiceBuy.create(listing);
+        Listing l = listingServiceBuy.create(listingCreationRequestDTO);
 
         if (l == null) {
             return new ResponseEntity<>("tidak boleh ada atribut yang null", HttpStatus.BAD_REQUEST);
         } else {
-            return ResponseEntity.ok(l);
+            Seller seller = sellerService.findById(l.getSellerId());
+            return ResponseEntity.ok(new ListingDetailsDto(l, seller));
         }
     }
 
