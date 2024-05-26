@@ -22,7 +22,7 @@ import java.util.function.Function;
 @Service
 public class JwtService {
 
-    private final String SECRET_KEY = Dotenv.load().get("JWT_SECRET_KEY");
+    private final String SecretKey = Dotenv.load().get("JWT_SECRET_KEY");
 
     @Autowired
     private UserRepository userRepository;
@@ -84,7 +84,7 @@ public class JwtService {
     }
 
     private Key getSignInKey() {
-        byte[] keyBytes = Decoders.BASE64.decode(SECRET_KEY);
+        byte[] keyBytes = Decoders.BASE64.decode(SecretKey);
         return Keys.hmacShaKeyFor(keyBytes);
     }
 
