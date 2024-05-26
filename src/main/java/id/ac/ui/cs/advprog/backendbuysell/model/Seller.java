@@ -20,8 +20,8 @@ public class Seller {
     @Column(name="name")
     private String name;
 
-    @OneToMany(mappedBy = "seller")
-    private List<Listing> listing;
+//    @OneToMany(mappedBy = "seller_id")
+//    private List<Listing> listing;
     @Override
     public String toString() {
         ObjectMapper om = new ObjectMapper();

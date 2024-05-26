@@ -78,11 +78,12 @@ public class Listing {
     }
 
     @Builder
-    public Listing(String name, String imageUrl, int stock, Long price, String size, String condition, Long sellerId, String description, String status){
+    public Listing(String name, String imageUrl, int stock, Long price, String category, String size, String condition, Long sellerId, String description, String status){
         this.name = name;
         this.imageUrl = imageUrl;
         this.stock = stock;
         this.price = price;
+        this.category = category;
         this.size = size;
         this.condition = condition;
         this.sellerId = sellerId;

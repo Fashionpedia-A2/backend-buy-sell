@@ -42,11 +42,11 @@ public class ListingServiceImplTest {
 
     @BeforeEach
     public void setUp() {
-        Listing listing1 = new Listing("Baju Koko Shimmer", "https://bajukokopria.com", 100, 100_000L, "M",
+        Listing listing1 = new Listing("Baju Koko Shimmer", "https://bajukokopria.com", 100, 100_000L,"Pakaian", "M",
                                        ListingCondition.NEW.getValue(), 1L, "Baju Koko Shimmer", ListingStatus.ACTIVE.getValue());
-        Listing listing2 = new Listing("Rok Standard SD", "https://roksd.com", 10, 150_000L, "M",
+        Listing listing2 = new Listing("Rok Standard SD", "https://roksd.com", 10, 150_000L, "Pakaian","M",
                                        ListingCondition.SATISFACTORY.getValue(), 2L, "Rok Standard SD", ListingStatus.ACTIVE.getValue());
-        Listing listing3 = new Listing("Topi Channel", "https://topichannel.com", 10, 150_000L, null,
+        Listing listing3 = new Listing("Topi Channel", "https://topichannel.com", 10, 150_000L,"Pakaian", null,
                                        ListingCondition.VERY_GOOD.getValue(), 1L, "Topi Channel", ListingStatus.ACTIVE.getValue());
         listing1.setId(1L);
         listing2.setId(2L);
@@ -105,7 +105,7 @@ public class ListingServiceImplTest {
     @Test
     void testUpdateListing() {
         Listing original = this.listings.getFirst();
-        Listing updatedRequest = new Listing("Baju-bajuan", original.getImageUrl(), 0, original.getPrice(),
+        Listing updatedRequest = new Listing("Baju-bajuan", original.getImageUrl(), 0, original.getPrice(),"Pakaian",
                                              original.getSize(), ListingCondition.NEW.getValue(), original.getSellerId(),
                                              original.getDescription(), ListingStatus.ACTIVE.getValue());
 

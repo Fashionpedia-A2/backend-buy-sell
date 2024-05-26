@@ -27,9 +27,9 @@ public class SellerTest {
         // Mock ObjectMapper to avoid actual JSON serialization
         ObjectMapper mapper = Mockito.mock(ObjectMapper.class);
         // Define expected JSON ignoring the "listing" field (as it's a one-to-many relationship)
-        Mockito.when(mapper.writeValueAsString(seller)).thenReturn("{\"id\":1,\"name\":\"John Doe\",\"listing\":null}");
+        Mockito.when(mapper.writeValueAsString(seller)).thenReturn("{\"id\":1,\"name\":\"John Doe\"}");
 
-        assertEquals("{\"id\":1,\"name\":\"John Doe\",\"listing\":null}", seller.toString());
+        assertEquals("{\"id\":1,\"name\":\"John Doe\"}", seller.toString());
     }
 
 }

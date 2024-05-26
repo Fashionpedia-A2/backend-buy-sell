@@ -6,6 +6,7 @@ import id.ac.ui.cs.advprog.backendbuysell.repository.CartRepository;
 import id.ac.ui.cs.advprog.backendbuysell.repository.ListingInCartRepository;
 import id.ac.ui.cs.advprog.backendbuysell.repository.ListingRepository;
 import id.ac.ui.cs.advprog.backendbuysell.service.CartService;
+import id.ac.ui.cs.advprog.backendbuysell.service.OrderService;
 import org.aspectj.lang.annotation.Before;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -32,6 +33,10 @@ public class CartServiceTest {
     private ListingInCartRepository listingInCartRepository;
     @Mock
     private ListingRepository listingRepository;
+
+    @Mock
+    private OrderService orderService;
+
     @InjectMocks
     private CartService cartService;
     @BeforeEach
@@ -120,13 +125,13 @@ public class CartServiceTest {
         listing1.setName("Product 1 Name");
         listing1.setDescription("Description of Product 1");
         listing1.setPrice(10000L);
-        listing1.setSeller(seller1);
+        listing1.setSellerId(seller1.getId());
 
         Listing listing2 = new Listing();
         listing2.setName("Product 2 Name");
         listing2.setDescription("Description of Product 2");
         listing2.setPrice(20000L);
-        listing2.setSeller(seller2);
+        listing2.setSellerId(seller2.getId());
 
         // Mock listingInCartRepository to return listings from both sellers
         List<ListingInCart> listingsInCart = new ArrayList<>();
