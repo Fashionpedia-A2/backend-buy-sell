@@ -22,7 +22,7 @@ import java.util.function.Function;
 @Service
 public class JwtService {
 
-    private final String SecretKey = Dotenv.load().get("JWT_SECRET_KEY");
+    private final String SecretKey = System.getenv("JWT_SECRET_KEY");
 
     @Autowired
     private UserRepository userRepository;
