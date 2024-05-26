@@ -1,8 +1,9 @@
 package id.ac.ui.cs.advprog.backendbuysell.auth.service;
 
+import id.ac.ui.cs.advprog.backendbuysell.auth.exception.NoUserProfileExistException;
 import id.ac.ui.cs.advprog.backendbuysell.auth.model.User;
-import id.ac.ui.cs.advprog.backendbuysell.auth.model.UserProfile;
 import id.ac.ui.cs.advprog.backendbuysell.auth.repository.UserRepository;
+import io.github.cdimascio.dotenv.Dotenv;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -11,7 +12,6 @@ import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
-import id.ac.ui.cs.advprog.backendbuysell.auth.exception.NoUserProfileExistException;
 
 import java.security.Key;
 import java.util.Date;
@@ -22,7 +22,8 @@ import java.util.function.Function;
 @Service
 public class JwtService {
 
-    private static final String SECRET_KEY = "645367566B59703373367639792F423F4528482B4D6251655468576D5A713474";
+    private final String SecretKey = Dotenv.load().get("JWT_SECRET_KEY");
+
     @Autowired
     private UserRepository userRepository;
     public User extractUser(String token){
@@ -83,7 +84,7 @@ public class JwtService {
     }
 
     private Key getSignInKey() {
-        byte[] keyBytes = Decoders.BASE64.decode(SECRET_KEY);
+        byte[] keyBytes = Decoders.BASE64.decode(SecretKey);
         return Keys.hmacShaKeyFor(keyBytes);
     }
 

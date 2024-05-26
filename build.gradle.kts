@@ -53,6 +53,7 @@ dependencies {
     runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.11.5")
     implementation("javax.servlet:javax.servlet-api:4.0.1")
     implementation("com.fasterxml.jackson.datatype:jackson-datatype-hibernate5-jakarta")
+    implementation("io.github.cdimascio:dotenv-java:3.0.0")
 
     // monitoring purposes
     implementation("org.springframework.boot:spring-boot-starter-actuator")
