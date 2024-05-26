@@ -3,7 +3,9 @@ package id.ac.ui.cs.advprog.backendbuysell.model;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.io.Serializable;
@@ -12,6 +14,8 @@ import java.io.Serializable;
 @Table(name="listing_in_cart")
 @Setter
 @Getter
+@AllArgsConstructor
+@NoArgsConstructor
 @IdClass(ListingInCartId.class)
 public class ListingInCart {
 //    @Id

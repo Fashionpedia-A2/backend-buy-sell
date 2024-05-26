@@ -10,14 +10,13 @@ import java.util.List;
 
 @Entity
 @Table(name="seller")
+@Setter
 @Getter
 public class Seller {
-    @Setter
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Setter
     @Column(name="name")
     private String name;
 
