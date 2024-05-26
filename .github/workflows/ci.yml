@@ -5,19 +5,87 @@ on:
   pull_request:
 
 jobs:
-  test:
-    name: Run tests
-    runs-on: ubuntu-22.04
+  build:
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:latest
+        ports:
+          - 5432:5432
+        env:
+          POSTGRES_DB: postgres
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+
     steps:
-      - name: Check out the Git repository
-        uses: actions/checkout@v4
-      - name: Set up Java toolchain
-        uses: actions/setup-java@v4
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up JDK
+        uses: actions/setup-java@v2
         with:
           distribution: "temurin"
           java-version: "21"
           cache: "gradle"
-      - name: Set gradlew as executable
-        run: chmod +x ./gradlew
-      - name: Run unit tests
-        run: ./gradlew test
+
+      - name: Debug database
+        run: echo "url= ${{ secrets.JDBC_DATABASE_URL }} , username= ${{ secrets.JDBC_DATABASE_USERNAME }} , pass= ${{ secrets.JDBC_DATABASE_PASSWORD }}, empty= ${{ secrets.IDKLOL }}, production = ${{ secrets.PRODUCTION }} psql db = ${{ secrets.POSTGRES_DB }} psql user = ${{ secrets.POSTGRES_USER }} pass = ${{ secrets.POSTGRES_PASSWORD }}, kalo pake env= ${{ env.POSTGRES_PASSWORD }}"
+
+      - name: Build with Gradle
+        env:
+          JDBC_DATABASE_URL: ${{ secrets.JDBC_DATABASE_URL }}
+          JDBC_DATABASE_USERNAME: ${{ secrets.JDBC_DATABASE_USERNAME }}
+          JDBC_DATABASE_PASSWORD: ${{ secrets.JDBC_DATABASE_PASSWORD }}
+          PRODUCTION: ${{ secrets.PRODUCTION }}
+        run: chmod +x ./gradlew && ./gradlew build
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: built-app
+          path: build/libs/*.jar
+
+  test:
+    name: Run tests
+    runs-on: ubuntu-latest
+    needs: build
+
+    services:
+      postgres:
+        image: postgres:latest
+        ports:
+          - 5432:5432
+        env:
+          POSTGRES_DB: postgres
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up JDK
+        uses: actions/setup-java@v2
+        with:
+          distribution: "temurin"
+          java-version: "21"
+
+      - name: Set up environment
+        run: |
+          export GRADLE_USER_HOME=$HOME/.gradle
+          export SPRING_PROFILES_ACTIVE=test
+
+      - name: Test with Gradle
+        env:
+          SPRING_PROFILES_ACTIVE: test
+        run: |
+          gradle check --info --stacktrace
+          gradle test
+          gradle jacocoTestReport
+
+      - name: Upload test results
+        uses: actions/upload-artifact@v2
+        with:
+          name: test-results
+          path: build/test-results

@@ -10,7 +10,7 @@ import java.util.List;
 @Getter
 @Setter
 @Builder
-public class ListingSearchResponseDTO {
+public class ListingListResponseDTO {
     private List<Listing> listings;
     private Integer currentPage;
     private Long totalItems;

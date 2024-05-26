@@ -1,7 +1,7 @@
 package id.ac.ui.cs.advprog.backendbuysell.service;
 
-import id.ac.ui.cs.advprog.backendbuysell.dto.ListingSearchRequestDTO;
-import id.ac.ui.cs.advprog.backendbuysell.dto.ListingSearchResponseDTO;
+import id.ac.ui.cs.advprog.backendbuysell.dto.ListingListRequestDTO;
+import id.ac.ui.cs.advprog.backendbuysell.dto.ListingListResponseDTO;
 import id.ac.ui.cs.advprog.backendbuysell.enums.ListingStatus;
 import id.ac.ui.cs.advprog.backendbuysell.exception.FieldValidationException;
 import id.ac.ui.cs.advprog.backendbuysell.exception.ForbiddenException;
@@ -12,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
-import org.springframework.validation.Errors;
 import org.springframework.validation.Errors;
 
 import java.util.ArrayList;
@@ -26,7 +25,10 @@ public class ListingServiceImpl implements ListingService {
     @Autowired
     ListingRepository listingRepository;
 
-    public Listing create(Listing listing, String sellerId) {
+    @Autowired
+    SellerService sellerService;
+
+    public Listing create(Listing listing, Long sellerId) {
         listing.setSellerId(sellerId);
         Errors validationResult = listing.validate();
         if (validationResult.hasErrors()) {
@@ -35,10 +37,10 @@ public class ListingServiceImpl implements ListingService {
         return listingRepository.save(listing);
     }
 
-    public ListingSearchResponseDTO getAll(ListingSearchRequestDTO request) {
+    public ListingListResponseDTO getAll(ListingListRequestDTO request) {
         Specification<Listing> specification = ListingSearchQueryBuilder.buildSpecification(request);
         Page<Listing> page = listingRepository.findAll(specification, request.getPageable());
-        return ListingSearchResponseDTO
+        return ListingListResponseDTO
                 .builder()
                 .listings(page.getContent())
                 .currentPage(page.getNumber())
@@ -51,7 +53,7 @@ public class ListingServiceImpl implements ListingService {
         return listingRepository.findById(id);
     }
 
-    public Listing update(Long id, Listing updatedListing, String sellerId) {
+    public Listing update(Long id, Listing updatedListing, Long sellerId) {
         Optional<Listing> oldResult = listingRepository.findById(id);
         if (oldResult.isEmpty()) {
             throw new NoSuchElementException();
@@ -68,7 +70,7 @@ public class ListingServiceImpl implements ListingService {
         return listingRepository.save(updatedListing);
     }
 
-    public Listing delete(Long id, String sellerId) {
+    public Listing delete(Long id, Long sellerId) {
         Listing listing = listingRepository.findById(id).orElseThrow();
         if (!isAuthenticated(listing, sellerId)) {
             throw new ForbiddenException("User is not authorized to perform action on this listing");
@@ -81,19 +83,19 @@ public class ListingServiceImpl implements ListingService {
         return listing;
     }
 
-    public ListingSearchResponseDTO getActiveListings(ListingSearchRequestDTO requestDTO) {
+    public ListingListResponseDTO getActiveListings(ListingListRequestDTO requestDTO) {
         List<String> status = new ArrayList<>();
         status.add(ListingStatus.VERIFIED.getValue());
         requestDTO.setStatuses(status);
         return this.getAll(requestDTO);
     }
 
-    public ListingSearchResponseDTO getSellerListings(String sellerId, ListingSearchRequestDTO requestDTO) {
+    public ListingListResponseDTO getSellerListings(Long sellerId, ListingListRequestDTO requestDTO) {
         requestDTO.setSellerId(sellerId);
         return this.getAll(requestDTO);
     }
 
-    public void setStatus(Long id, String status, String sellerId) {
+    public void setStatus(Long id, String status, Long sellerId) {
         Listing listing = listingRepository.findById(id).orElseThrow();
         if (!isAuthenticated(listing, sellerId)) {
             throw new ForbiddenException("User is not authorized to perform action on this listing");
@@ -106,7 +108,7 @@ public class ListingServiceImpl implements ListingService {
         listingRepository.save(listing);
     }
 
-    private boolean isAuthenticated(Listing listing, String sellerId) {
+    private boolean isAuthenticated(Listing listing, Long sellerId) {
         return listing.getSellerId().equals(sellerId);
     }
 }

@@ -1,11 +1,12 @@
 package id.ac.ui.cs.advprog.backendbuysell.service;
 
-import id.ac.ui.cs.advprog.backendbuysell.dto.ListingSearchRequestDTO;
+import id.ac.ui.cs.advprog.backendbuysell.dto.ListingListRequestDTO;
 import id.ac.ui.cs.advprog.backendbuysell.enums.ListingCondition;
 import id.ac.ui.cs.advprog.backendbuysell.enums.ListingStatus;
 import id.ac.ui.cs.advprog.backendbuysell.exception.FieldValidationException;
 import id.ac.ui.cs.advprog.backendbuysell.exception.ForbiddenException;
 import id.ac.ui.cs.advprog.backendbuysell.model.Listing;
+import id.ac.ui.cs.advprog.backendbuysell.model.Seller;
 import id.ac.ui.cs.advprog.backendbuysell.repository.ListingRepository;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -13,7 +14,6 @@ import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -31,47 +31,33 @@ public class ListingServiceImplTest {
     @Mock
     ListingRepository repository;
 
+    @Mock
+    SellerService sellerService;
+
     @InjectMocks
     ListingServiceImpl service;
 
     List<Listing> listings;
-    String sellerId;
-    ListingSearchRequestDTO searchCriteriaDTO = ListingSearchRequestDTO.builder().pageable(PageRequest.of(0, 20)).build();
+    ListingListRequestDTO searchCriteriaDTO = ListingListRequestDTO.builder().pageable(PageRequest.of(0, 20)).build();
 
     @BeforeEach
     public void setUp() {
-        Listing listing1 = new Listing("Baju Koko Shimmer", "660bd2da-ed38-41c0-af02-797556f0b9a1", 100, 100_000L);
+        Listing listing1 = new Listing("Baju Koko Shimmer", "https://bajukokopria.com", 100, 100_000L, "M",
+                                       ListingCondition.NEW.getValue(), 1L, "Baju Koko Shimmer");
+        Listing listing2 = new Listing("Rok Standard SD", "https://roksd.com", 10, 150_000L, "M",
+                                       ListingCondition.SATISFACTORY.getValue(), 2L, "Rok Standard SD");
+        Listing listing3 = new Listing("Topi Channel", "https://topichannel.com", 10, 150_000L, null,
+                                       ListingCondition.VERY_GOOD.getValue(), 1L, "Topi Channel");
         listing1.setId(1L);
-        listing1.setCategory("Baju Muslim Pria");
-        listing1.setImageUrl("https://bajukokopria.com");
-        listing1.setSize("M");
-        listing1.setCondition(ListingCondition.NEW.getValue());
-        listing1.setStatus(ListingStatus.VERIFIED.getValue());
-        listing1.setDescription("Lorem Ipsum");
-
-        Listing listing2 = new Listing("Rok Standard SD", "660bd2da-ed38-41c0-af02-797556f0b9a1", 10, 150_000L);
         listing2.setId(2L);
-        listing2.setCategory("Seragam SD");
-        listing2.setImageUrl("https://roksd.com");
-        listing2.setSize("M");
-        listing2.setCondition(ListingCondition.SATISFACTORY.getValue());
-        listing2.setStatus(ListingStatus.PENDING.getValue());
-        listing2.setDescription("Lorem Ipsum");
-
-        Listing listing3 = new Listing("Topi Channel", "931bd2da-ed38-41c0-af02-797556f0b9a1", 10, 150_000L);
         listing3.setId(3L);
-        listing3.setCategory("Topi");
-        listing3.setImageUrl("https://topichannel.com");
-        listing3.setCondition(ListingCondition.VERY_GOOD.getValue());
+        listing1.setStatus(ListingStatus.VERIFIED.getValue());
         listing3.setStatus(ListingStatus.VERIFIED.getValue());
-        listing3.setDescription("Lorem Ipsum");
 
         this.listings = new ArrayList<>();
         this.listings.add(listing1);
         this.listings.add(listing2);
         this.listings.add(listing3);
-
-        this.sellerId = listing1.getSellerId();
     }
 
 
@@ -80,7 +66,7 @@ public class ListingServiceImplTest {
         Listing listing = this.listings.getFirst();
         doReturn(listing).when(repository).save(any(Listing.class));
 
-        Listing savedListing = service.create(listing, this.sellerId);
+        Listing savedListing = service.create(listing, listing.getSellerId());
         verify(repository, times(1)).save(any(Listing.class));
         assertEquals(listing.getId(), savedListing.getId());
     }
@@ -121,13 +107,9 @@ public class ListingServiceImplTest {
     @Test
     void testUpdateListing() {
         Listing original = this.listings.getFirst();
-        Listing updatedRequest = new Listing("Baju-bajuan", original.getSellerId(), 0, original.getPrice());
-        updatedRequest.setCategory(original.getCategory());
-        updatedRequest.setImageUrl(original.getImageUrl());
-        updatedRequest.setSize(original.getSize());
-        updatedRequest.setCondition(ListingCondition.NEW.getValue());
-        updatedRequest.setStatus(original.getStatus());
-        updatedRequest.setDescription(original.getDescription());
+        Listing updatedRequest = new Listing("Baju-bajuan", original.getImageUrl(), 0, original.getPrice(),
+                                             original.getSize(), ListingCondition.NEW.getValue(), original.getSellerId(),
+                                             original.getDescription());
 
         doReturn(Optional.of(original)).when(repository).findById(any(Long.class));
         doReturn(updatedRequest).when(repository).save(any(Listing.class));
@@ -147,14 +129,15 @@ public class ListingServiceImplTest {
     void testUpdateListingIfIdNotFound() {
         Listing listing = this.listings.getFirst();
         doReturn(Optional.empty()).when(repository).findById(any(Long.class));
-        assertThrows(NoSuchElementException.class, () -> service.update(listing.getId(), listing, this.sellerId));
+        assertThrows(NoSuchElementException.class, () -> service.update(-1L, listing, listing.getSellerId()));
     }
 
     @Test
-    void testUpdateListingByUnauthorizedUser(){
+    void testUpdateListingByUnauthorizedUser() {
         Listing listing = this.listings.getFirst();
+        Long fakeSellerId = -1L;
         doReturn(Optional.of(listing)).when(repository).findById(any(Long.class));
-        assertThrows(ForbiddenException.class, () -> service.update(listing.getId(), listing, "hacker"));
+        assertThrows(ForbiddenException.class, () -> service.update(listing.getId(), listing, fakeSellerId));
         verify(repository, times(0)).save(any(Listing.class));
     }
 
@@ -164,7 +147,7 @@ public class ListingServiceImplTest {
         System.out.println(listing.getId());
         doReturn(Optional.of(listing)).when(repository).findById(any(Long.class));
 
-        Listing deletedListing = service.delete(listing.getId(), this.sellerId);
+        Listing deletedListing = service.delete(listing.getId(), listing.getSellerId());
 
         verify(repository, times(1)).deleteById(any(Long.class));
         assertEquals(listing.getId(), deletedListing.getId());
@@ -173,14 +156,14 @@ public class ListingServiceImplTest {
     @Test
     void testDeleteListingIfIdNotFound() {
         doReturn(Optional.empty()).when(repository).findById(any(Long.class));
-        assertThrows(NoSuchElementException.class, () -> service.delete(666L, this.sellerId));
+        assertThrows(NoSuchElementException.class, () -> service.delete(666L, 1L));
     }
 
     @Test
-    void testDeleteListingByUnauthorizedUser(){
+    void testDeleteListingByUnauthorizedUser() {
         Listing listing = this.listings.getFirst();
         doReturn(Optional.of(listing)).when(repository).findById(any(Long.class));
-        assertThrows(ForbiddenException.class, () -> service.delete(listing.getId(), "hacker"));
+        assertThrows(ForbiddenException.class, () -> service.delete(listing.getId(), -100L));
         verify(repository, times(0)).deleteById(any(Long.class));
     }
 
@@ -202,7 +185,7 @@ public class ListingServiceImplTest {
 
     @Test
     void testGetSellerListings() {
-        String sellerId = this.listings.getFirst().getSellerId();
+        Long sellerId = this.listings.getFirst().getSellerId();
         List<Listing> sellerListings = new ArrayList<>();
         for (Listing listing : this.listings) {
             if (listing.getSellerId().equals(sellerId)) {
@@ -223,7 +206,7 @@ public class ListingServiceImplTest {
         doReturn(Optional.of(listing)).when(repository).findById(any(Long.class));
         doReturn(listing).when(repository).save(any(Listing.class));
 
-        service.setStatus(listing.getId(), ListingStatus.REJECTED.getValue(), this.sellerId);
+        service.setStatus(listing.getId(), ListingStatus.REJECTED.getValue(), listing.getSellerId());
         verify(repository, times(1)).save(any(Listing.class));
 
         Listing result = service.getById(listing.getId()).orElseThrow();
@@ -235,7 +218,7 @@ public class ListingServiceImplTest {
         doReturn(Optional.empty()).when(repository).findById(any(Long.class));
 
         assertThrows(NoSuchElementException.class, () -> {
-            service.setStatus(123L, ListingStatus.REJECTED.getValue(), this.sellerId);
+            service.setStatus(123L, ListingStatus.REJECTED.getValue(), 1L);
         });
 
         verify(repository, times(0)).save(any(Listing.class));
@@ -247,18 +230,18 @@ public class ListingServiceImplTest {
         doReturn(Optional.of(listing)).when(repository).findById(any(Long.class));
 
         assertThrows(FieldValidationException.class, () -> {
-            service.setStatus(listing.getId(), "DUMMY", this.sellerId);
+            service.setStatus(listing.getId(), "DUMMY", listing.getSellerId());
         });
         verify(repository, times(0)).save(any(Listing.class));
     }
 
     @Test
-    void testSetListingStatusByUnauthorizedUser(){
+    void testSetListingStatusByUnauthorizedUser() {
         Listing listing = this.listings.getFirst();
         doReturn(Optional.of(listing)).when(repository).findById(any(Long.class));
 
         assertThrows(ForbiddenException.class, () -> {
-            service.setStatus(listing.getId(), ListingStatus.REJECTED.getValue(), "hacker");
+            service.setStatus(listing.getId(), ListingStatus.REJECTED.getValue(), -1L);
         });
         verify(repository, times(0)).deleteById(any(Long.class));
     }

@@ -14,7 +14,11 @@ public class ListingTest {
 
     @BeforeEach
     void setup() {
-        this.listing = new Listing("Baju Koko Shimmer", "660bd2da-ed38-41c0-af02-797556f0b9a1", 100, 100_000L);
+        this.listing = new Listing();
+        this.listing.setName("Baju Koko Shimmer");
+        this.listing.setSellerId(1L);
+        this.listing.setStock(100);
+        this.listing.setPrice(100_000L);
         this.listing.setCategory("Baju Muslim Pria");
         this.listing.setImageUrl("https://bajukokopria.com");
         this.listing.setSize("M");
@@ -24,7 +28,11 @@ public class ListingTest {
 
     @Test
     void testMinimumRequiredField(){
-        Listing listing = new Listing("Baju Koko Shimmer", "660bd2da-ed38-41c0-af02-797556f0b9a1", 100, 100_000L);;
+        Listing listing = new Listing();
+        listing.setName("Baju Koko Shimmer");
+        listing.setSellerId(1L);
+        listing.setStock(100);
+        listing.setPrice(100_000L);
         validationResult = listing.validate();
         assertFalse(validationResult.hasErrors());
     }
@@ -44,18 +52,12 @@ public class ListingTest {
     }
 
     @Test
-    void testNullSellerId(){
+    void testNullSeller(){
         listing.setSellerId(null);
         validationResult = listing.validate();
         assertTrue(validationResult.hasErrors());
     }
 
-    @Test
-    void testBlankSellerId(){
-        listing.setSellerId("   ");
-        validationResult = listing.validate();
-        assertTrue(validationResult.hasErrors());
-    }
 
     @Test
     void testNullStock(){
