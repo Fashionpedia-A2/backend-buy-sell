@@ -35,10 +35,14 @@ public class Listing {
     @Column(name = "name", nullable = false)
     private String name;
 
-    @NotNull(message = "Seller must not be empty")
-    @ManyToOne
-    @JoinColumn(name = "seller_id")
-    private Seller seller;
+    @NotNull(message = "Seller_id must not be empty")
+    @Column(name = "seller_id", nullable = false)
+    private Long sellerId;
+
+//    @NotNull(message = "Seller must not be empty")
+//    @ManyToOne
+//    @JoinColumn(name = "seller_id")
+//    private Seller seller;
 
     @NotNull(message = "Stock must not be empty")
     @Column(name = "stock", nullable = false)
@@ -49,7 +53,7 @@ public class Listing {
     private Long price;
 
     @Column(name = "status", nullable = false)
-    private String status = ListingStatus.PENDING.getValue();
+    private String status;
 
     @Column(name = "category")
     private String category;
@@ -74,31 +78,17 @@ public class Listing {
     }
 
     @Builder
-    public Listing(String name, String imageUrl, int stock, Long price, String category, String size, String condition, Seller seller, String description){
+    public Listing(String name, String imageUrl, int stock, Long price, String category, String size, String condition, Long sellerId, String description, String status){
         this.name = name;
         this.imageUrl = imageUrl;
         this.stock = stock;
         this.price = price;
+        this.category = category;
         this.size = size;
         this.condition = condition;
-        this.seller = seller;
+        this.sellerId = sellerId;
         this.description = description;
-        this.category = category;
-        setStatus(ListingStatus.PENDING.getValue());
-    }
-
-    @Builder
-    public Listing(String name, String imageUrl, int stock, Long price, String size, String condition, Seller seller, String description){
-        this.name = name;
-        this.imageUrl = imageUrl;
-        this.stock = stock;
-        this.price = price;
-        this.size = size;
-        this.condition = condition;
-        this.seller = seller;
-        this.description = description;
-        this.category = category;
-        setStatus(ListingStatus.PENDING.getValue());
+        setStatus(status);
     }
 
     public void setStatus(String status) {

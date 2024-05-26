@@ -6,6 +6,7 @@ import id.ac.ui.cs.advprog.backendbuysell.enums.ListingStatus;
 import id.ac.ui.cs.advprog.backendbuysell.exception.FieldValidationException;
 import id.ac.ui.cs.advprog.backendbuysell.exception.ForbiddenException;
 import id.ac.ui.cs.advprog.backendbuysell.model.Listing;
+import id.ac.ui.cs.advprog.backendbuysell.model.Seller;
 import id.ac.ui.cs.advprog.backendbuysell.repository.ListingRepository;
 import id.ac.ui.cs.advprog.backendbuysell.utils.ListingSearchQueryBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +30,7 @@ public class ListingServiceImpl implements ListingService {
     SellerService sellerService;
 
     public Listing create(Listing listing, Long sellerId) {
-        listing.setSeller(sellerService.findById(sellerId));
+        listing.setSellerId(sellerId);
         Errors validationResult = listing.validate();
         if (validationResult.hasErrors()) {
             throw new FieldValidationException(validationResult.getAllErrors(), "Validation Error");
@@ -61,7 +62,7 @@ public class ListingServiceImpl implements ListingService {
         if (!isAuthenticated(oldResult.get(), sellerId)) {
             throw new ForbiddenException("User is not authorized to perform action on this listing");
         }
-        updatedListing.setSeller(sellerService.findById(sellerId));
+        updatedListing.setSellerId(sellerId);
         Errors validationResult = updatedListing.validate();
         if (validationResult.hasErrors()) {
             throw new FieldValidationException(validationResult.getAllErrors(), "Validation Error");
@@ -85,8 +86,8 @@ public class ListingServiceImpl implements ListingService {
 
     public ListingListResponseDTO getActiveListings(ListingListRequestDTO requestDTO) {
         List<String> status = new ArrayList<>();
-        status.add(ListingStatus.VERIFIED.getValue());
-        requestDTO.setStatuses(status);
+        status.add(ListingStatus.ACTIVE.getValue());
+        requestDTO.setStatus(status);
         return this.getAll(requestDTO);
     }
 
@@ -109,6 +110,6 @@ public class ListingServiceImpl implements ListingService {
     }
 
     private boolean isAuthenticated(Listing listing, Long sellerId) {
-        return listing.getSeller().getId().equals(sellerId);
+        return listing.getSellerId().equals(sellerId);
     }
 }

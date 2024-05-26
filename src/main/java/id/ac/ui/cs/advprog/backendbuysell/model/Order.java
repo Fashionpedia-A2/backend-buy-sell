@@ -25,6 +25,7 @@ import java.util.Set;
 @Table(name = "orders")
 @Getter
 @Setter
+
 public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -37,7 +38,7 @@ public class Order {
 
     @JsonProperty("updated_at")
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "updated_at", insertable = false, updatable = false)
+    @Column(name = "updated_at", nullable = false)
     private Date updatedAt;
 
     @NotNull(message = "Status must not be empty")
@@ -54,10 +55,9 @@ public class Order {
     @JoinColumn(name = "order_id", nullable = false)
     private List<ListingInOrder> listingInOrders = new ArrayList<>();
 
-    @NotNull(message = "Seller must not be empty")
-    @ManyToOne
-    @JoinColumn(name = "seller_id")
-    private Seller seller;
+    @NotNull(message = "Seller_id must not be empty")
+    @Column(name = "seller_id", nullable = false)
+    private Long sellerId;
 
     @NotNull(message = "Buyer must not be empty")
     @JsonProperty("buyer_id")
@@ -71,8 +71,9 @@ public class Order {
 
     @PrePersist
     protected void onCreate() {
-        createdAt = new Date();
-        updatedAt = createdAt;
+        Date currentDate = new Date();
+        createdAt = currentDate;
+        updatedAt = currentDate;
     }
 
     @PreUpdate

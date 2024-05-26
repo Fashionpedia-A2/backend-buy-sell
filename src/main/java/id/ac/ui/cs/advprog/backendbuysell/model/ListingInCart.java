@@ -18,10 +18,6 @@ import java.io.Serializable;
 @NoArgsConstructor
 @IdClass(ListingInCartId.class)
 public class ListingInCart {
-//    @Id
-//    @GeneratedValue(strategy = GenerationType.IDENTITY)
-//    private long id;
-
     @Id
     @ManyToOne
     @JoinColumn(name = "listing_id", referencedColumnName = "id")

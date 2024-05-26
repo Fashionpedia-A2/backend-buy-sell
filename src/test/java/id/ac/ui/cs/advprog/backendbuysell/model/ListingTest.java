@@ -1,5 +1,6 @@
 package id.ac.ui.cs.advprog.backendbuysell.model;
 
+import id.ac.ui.cs.advprog.backendbuysell.enums.ListingStatus;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.validation.BeanPropertyBindingResult;
@@ -12,22 +13,18 @@ public class ListingTest {
     Listing listing;
     Errors validationResult;
 
-    Seller seller;
-
     @BeforeEach
     void setup() {
-        seller = new Seller();
-        seller.setId(1L);
-        
         this.listing = new Listing();
         this.listing.setName("Baju Koko Shimmer");
-        this.listing.setSeller(seller);
+        this.listing.setSellerId(1L);
         this.listing.setStock(100);
         this.listing.setPrice(100_000L);
         this.listing.setCategory("Baju Muslim Pria");
         this.listing.setImageUrl("https://bajukokopria.com");
         this.listing.setSize("M");
         this.listing.setDescription("Lorem Ipsum");
+        this.listing.setStatus(ListingStatus.ACTIVE.getValue());
         this.validationResult = new BeanPropertyBindingResult(this.listing, "listing");
     }
 
@@ -35,9 +32,10 @@ public class ListingTest {
     void testMinimumRequiredField(){
         Listing listing = new Listing();
         listing.setName("Baju Koko Shimmer");
-        listing.setSeller(seller);
+        listing.setSellerId(1L);
         listing.setStock(100);
         listing.setPrice(100_000L);
+        listing.setStatus(ListingStatus.ACTIVE.getValue());
         validationResult = listing.validate();
         assertFalse(validationResult.hasErrors());
     }
@@ -58,7 +56,7 @@ public class ListingTest {
 
     @Test
     void testNullSeller(){
-        listing.setSeller(null);
+        listing.setSellerId(null);
         validationResult = listing.validate();
         assertTrue(validationResult.hasErrors());
     }
@@ -108,14 +106,14 @@ public class ListingTest {
 
     @Test
     void testSetValidStatusAllCapital(){
-        this.listing.setStatus("VERIFIED");
+        this.listing.setStatus("ACTIVE");
         validationResult = this.listing.validate();
         assertFalse(validationResult.hasErrors());
     }
 
     @Test
     void testSetValidStatusLowerCase(){
-        this.listing.setStatus("PenDIng");
+        this.listing.setStatus("inAcTIve");
         validationResult = this.listing.validate();
         assertFalse(validationResult.hasErrors());
     }

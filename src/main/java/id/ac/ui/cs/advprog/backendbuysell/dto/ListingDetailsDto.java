@@ -25,7 +25,7 @@ public class ListingDetailsDto {
     private String description;
 
 
-    public ListingDetailsDto(Listing listing){
+    public ListingDetailsDto(Listing listing, Seller seller){
         this.id = listing.getId();
         this.name = listing.getName();
         this.imageUrl = listing.getImageUrl();
@@ -33,7 +33,7 @@ public class ListingDetailsDto {
         this.price = listing.getPrice();
         this.size = listing.getSize();
         this.condition = listing.getCondition();
-        this.sellerDetailsDto = new SellerDetailsDto(listing.getSeller());
+        this.sellerDetailsDto = new SellerDetailsDto(seller);
         this.status = listing.getStatus();
         this.category = listing.getCategory();
         this.description = listing.getDescription();

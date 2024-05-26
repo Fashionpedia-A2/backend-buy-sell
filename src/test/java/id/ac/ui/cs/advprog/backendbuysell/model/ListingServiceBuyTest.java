@@ -1,6 +1,7 @@
 package id.ac.ui.cs.advprog.backendbuysell.model;
 
 import id.ac.ui.cs.advprog.backendbuysell.dto.ListingCreationRequestDTO;
+import id.ac.ui.cs.advprog.backendbuysell.enums.ListingStatus;
 import id.ac.ui.cs.advprog.backendbuysell.repository.SellerRepository;
 import id.ac.ui.cs.advprog.backendbuysell.service.ListingServiceBuy;
 import id.ac.ui.cs.advprog.backendbuysell.repository.ListingRepository;
@@ -44,7 +45,8 @@ public class ListingServiceBuyTest {
                 "M",
                 "New",
                 null, // Seller can be set separately in the test if needed
-                "A detailed description of Sample Listing 1"
+                "A detailed description of Sample Listing 1",
+                ListingStatus.ACTIVE.getValue()
         ));
 
         listings.add(new Listing(
@@ -56,7 +58,8 @@ public class ListingServiceBuyTest {
                 "L",
                 "Used",
                 null, // Seller can be set separately in the test if needed
-                "Another detailed description for Sample Listing 2"
+                "Another detailed description for Sample Listing 2",
+                ListingStatus.ACTIVE.getValue()
         ));
 
         // You can add more listings as needed

@@ -12,12 +12,16 @@ import java.util.List;
 @Getter
 @Builder
 public class OrderListRequestDTO {
-    private List<String> statuses;
+    private Long id;
+    private String status;
     private Long sellerId;
     private Long buyerId;
     private Long paymentId;
     private Date createdAtStart;
     private Date createdAtEnd;
+    private Date updatedAtStart;
+    private Date updatedAtEnd;
+    private String buyerName;
 
     private Pageable pageable;
 }

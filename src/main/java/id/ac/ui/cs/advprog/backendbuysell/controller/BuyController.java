@@ -68,8 +68,9 @@ public class BuyController {
     public ResponseEntity<List<ListingDetailsDto>> getAllListing() {
         List<Listing> list = listingServiceBuy.findAll();
         List<ListingDetailsDto> listingDetailsDtoList = new LinkedList<ListingDetailsDto>();
-        for(int i = 0; i < list.size(); i++){
-            listingDetailsDtoList.add(new ListingDetailsDto(list.get(i)));
+        for (Listing listing : list) {
+            Seller seller = sellerService.findById(listing.getSellerId());
+            listingDetailsDtoList.add(new ListingDetailsDto(listing, seller));
         }
         return ResponseEntity.ok(listingDetailsDtoList);
     }
@@ -142,7 +143,8 @@ public class BuyController {
         if (l == null) {
             return new ResponseEntity<>("tidak boleh ada atribut yang null", HttpStatus.BAD_REQUEST);
         } else {
-            return ResponseEntity.ok(new ListingDetailsDto(l));
+            Seller seller = sellerService.findById(l.getSellerId());
+            return ResponseEntity.ok(new ListingDetailsDto(l, seller));
         }
     }
 

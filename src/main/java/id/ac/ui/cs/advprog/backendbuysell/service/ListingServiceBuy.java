@@ -24,15 +24,14 @@ public class ListingServiceBuy {
     }
 
     public Listing create(ListingCreationRequestDTO l){
-        Listing newListing = new Listing().builder()
+        Listing newListing = Listing.builder()
                 .name(l.getName())
                 .imageUrl(l.getImageUrl())
                 .stock(l.getStock())
                 .price(l.getPrice())
-                .category(l.getCategory())
                 .size(l.getSize())
                 .condition(l.getCondition())
-                .seller(sellerRepository.getReferenceById(l.getSeller_id()))
+                .sellerId(l.getSeller_id())
                 .description(l.getDescription())
                 .build();
 
