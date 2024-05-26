@@ -3,6 +3,7 @@ package id.ac.ui.cs.advprog.backendbuysell.service;
 import id.ac.ui.cs.advprog.backendbuysell.dto.ListingCreationRequestDTO;
 import id.ac.ui.cs.advprog.backendbuysell.model.Listing;
 import id.ac.ui.cs.advprog.backendbuysell.repository.ListingRepository;
+import id.ac.ui.cs.advprog.backendbuysell.repository.SellerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
@@ -14,6 +15,9 @@ import java.util.Optional;
 public class ListingServiceBuy {
     @Autowired
     private ListingRepository listingRepository;
+
+    @Autowired
+    private SellerRepository sellerRepository;
 
     public List<Listing> findAll(){
         return listingRepository.findAll();
