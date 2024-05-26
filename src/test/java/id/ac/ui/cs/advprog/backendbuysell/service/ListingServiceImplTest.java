@@ -43,16 +43,14 @@ public class ListingServiceImplTest {
     @BeforeEach
     public void setUp() {
         Listing listing1 = new Listing("Baju Koko Shimmer", "https://bajukokopria.com", 100, 100_000L, "M",
-                                       ListingCondition.NEW.getValue(), 1L, "Baju Koko Shimmer");
+                                       ListingCondition.NEW.getValue(), 1L, "Baju Koko Shimmer", ListingStatus.ACTIVE.getValue());
         Listing listing2 = new Listing("Rok Standard SD", "https://roksd.com", 10, 150_000L, "M",
-                                       ListingCondition.SATISFACTORY.getValue(), 2L, "Rok Standard SD");
+                                       ListingCondition.SATISFACTORY.getValue(), 2L, "Rok Standard SD", ListingStatus.ACTIVE.getValue());
         Listing listing3 = new Listing("Topi Channel", "https://topichannel.com", 10, 150_000L, null,
-                                       ListingCondition.VERY_GOOD.getValue(), 1L, "Topi Channel");
+                                       ListingCondition.VERY_GOOD.getValue(), 1L, "Topi Channel", ListingStatus.ACTIVE.getValue());
         listing1.setId(1L);
         listing2.setId(2L);
         listing3.setId(3L);
-        listing1.setStatus(ListingStatus.VERIFIED.getValue());
-        listing3.setStatus(ListingStatus.VERIFIED.getValue());
 
         this.listings = new ArrayList<>();
         this.listings.add(listing1);
@@ -109,7 +107,7 @@ public class ListingServiceImplTest {
         Listing original = this.listings.getFirst();
         Listing updatedRequest = new Listing("Baju-bajuan", original.getImageUrl(), 0, original.getPrice(),
                                              original.getSize(), ListingCondition.NEW.getValue(), original.getSellerId(),
-                                             original.getDescription());
+                                             original.getDescription(), ListingStatus.ACTIVE.getValue());
 
         doReturn(Optional.of(original)).when(repository).findById(any(Long.class));
         doReturn(updatedRequest).when(repository).save(any(Listing.class));
@@ -171,7 +169,7 @@ public class ListingServiceImplTest {
     void testGetAllActiveListing() {
         List<Listing> activeListings = new ArrayList<>();
         for (Listing listing : this.listings) {
-            if (ListingStatus.VERIFIED.getValue().equals(listing.getStatus())) {
+            if (ListingStatus.ACTIVE.getValue().equals(listing.getStatus())) {
                 activeListings.add(listing);
             }
         }
@@ -202,15 +200,15 @@ public class ListingServiceImplTest {
     @Test
     void testSetListingStatus() {
         Listing listing = this.listings.getFirst();
-        listing.setStatus(ListingStatus.REJECTED.getValue());
+        listing.setStatus(ListingStatus.INACTIVE.getValue());
         doReturn(Optional.of(listing)).when(repository).findById(any(Long.class));
         doReturn(listing).when(repository).save(any(Listing.class));
 
-        service.setStatus(listing.getId(), ListingStatus.REJECTED.getValue(), listing.getSellerId());
+        service.setStatus(listing.getId(), ListingStatus.INACTIVE.getValue(), listing.getSellerId());
         verify(repository, times(1)).save(any(Listing.class));
 
         Listing result = service.getById(listing.getId()).orElseThrow();
-        assertEquals(ListingStatus.REJECTED.getValue(), result.getStatus());
+        assertEquals(ListingStatus.INACTIVE.getValue(), result.getStatus());
     }
 
     @Test
@@ -218,7 +216,7 @@ public class ListingServiceImplTest {
         doReturn(Optional.empty()).when(repository).findById(any(Long.class));
 
         assertThrows(NoSuchElementException.class, () -> {
-            service.setStatus(123L, ListingStatus.REJECTED.getValue(), 1L);
+            service.setStatus(123L, ListingStatus.INACTIVE.getValue(), 1L);
         });
 
         verify(repository, times(0)).save(any(Listing.class));
@@ -241,7 +239,7 @@ public class ListingServiceImplTest {
         doReturn(Optional.of(listing)).when(repository).findById(any(Long.class));
 
         assertThrows(ForbiddenException.class, () -> {
-            service.setStatus(listing.getId(), ListingStatus.REJECTED.getValue(), -1L);
+            service.setStatus(listing.getId(), ListingStatus.INACTIVE.getValue(), -1L);
         });
         verify(repository, times(0)).deleteById(any(Long.class));
     }

@@ -4,9 +4,8 @@ import lombok.Getter;
 
 @Getter
 public enum ListingStatus {
-    PENDING("PENDING"),
-    VERIFIED("VERIFIED"),
-    REJECTED("REJECTED");
+    ACTIVE("ACTIVE"),
+    INACTIVE("INACTIVE");
 
     private final String value;
 

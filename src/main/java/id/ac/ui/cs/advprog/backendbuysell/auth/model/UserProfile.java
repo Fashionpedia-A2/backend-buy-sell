@@ -3,6 +3,7 @@ package id.ac.ui.cs.advprog.backendbuysell.auth.model;
 import jakarta.persistence.*;
 
 import lombok.*;
+import org.hibernate.annotations.Immutable;
 
 import java.util.UUID;
 
@@ -11,6 +12,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
+@Immutable
 public class UserProfile {
 
     @Id
