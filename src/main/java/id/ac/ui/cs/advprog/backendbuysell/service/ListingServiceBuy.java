@@ -1,5 +1,6 @@
 package id.ac.ui.cs.advprog.backendbuysell.service;
 
+import id.ac.ui.cs.advprog.backendbuysell.dto.ListingCreationRequestDTO;
 import id.ac.ui.cs.advprog.backendbuysell.model.Listing;
 import id.ac.ui.cs.advprog.backendbuysell.repository.ListingRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,8 +19,19 @@ public class ListingServiceBuy {
         return listingRepository.findAll();
     }
 
-    public Listing create(Listing l){
-        Listing newListing = new Listing(l.getName(), l.getImageUrl(), l.getStock(), l.getPrice(), l.getSize(), l.getCondition(), l.getSellerId(), l.getDescription());
+    public Listing create(ListingCreationRequestDTO l){
+        Listing newListing = Listing.builder()
+                .name(l.getName())
+                .imageUrl(l.getImageUrl())
+                .stock(l.getStock())
+                .price(l.getPrice())
+                .size(l.getSize())
+                .condition(l.getCondition())
+                .sellerId(l.getSeller_id())
+                .description(l.getDescription())
+                .build();
+
+
         try{
             return listingRepository.save(newListing);
         } catch (DataIntegrityViolationException e){
