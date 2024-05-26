@@ -6,6 +6,7 @@ import id.ac.ui.cs.advprog.backendbuysell.enums.ListingStatus;
 import id.ac.ui.cs.advprog.backendbuysell.exception.FieldValidationException;
 import id.ac.ui.cs.advprog.backendbuysell.exception.ForbiddenException;
 import id.ac.ui.cs.advprog.backendbuysell.model.Listing;
+import id.ac.ui.cs.advprog.backendbuysell.model.Seller;
 import id.ac.ui.cs.advprog.backendbuysell.repository.ListingRepository;
 import id.ac.ui.cs.advprog.backendbuysell.utils.ListingSearchQueryBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
